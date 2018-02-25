@@ -23,7 +23,7 @@ def reply(fb_id,fb_text):
     aquired_data=json.dumps(data)
     print(aquired_data)
 
-    req = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+token,json=r)
+    req = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+token,json=aquired_data)
     print(req.content)
 
 @app.route('/webhook',methods=['GET', 'POST'])
