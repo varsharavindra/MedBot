@@ -34,6 +34,7 @@ def hello_world():
             print(request.args.get('hub.challenge', ''))
             return request.args.get('hub.challenge', '')
     else:
+        print("got a message")
         a=request.get_json()
         fb_id=a['entry'][0]['messaging'][0]['sender']['id']
         fb_text=a['entry'][0]['messaging'][0]['message']['text']
