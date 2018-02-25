@@ -9,23 +9,24 @@ token="EAACGHzJZBmDABAJH46EL4XMx90yxhdCXekg0tmvWFVnxWpYEp4nKCZCMvlySgQsCjVfZAZCz
 
 
 
-def reply(b,c):
+def reply(fb_id,fb_text):
 
     data={
     "messaging_type": "RESPONSE",
      "recipient": {
-    "id": b
+    "id": fb_id
     },
     "message": {
-      "text": c
+      "text": fb_text
     }
     }
-    r=json.dumps(data)
-    print(r)
+    aquired_data=json.dumps(data)
+    print(aquired_data)
+
     req = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+token,json=r)
     print(req.content)
 
-@app.route('/',methods=['GET', 'POST'])
+@app.route('/webhook',methods=['GET', 'POST'])
 def hello_world():
     if request.method=='GET':
         if (request.args.get('hub.verify_token', '') == "varsha"):
@@ -34,11 +35,12 @@ def hello_world():
             return request.args.get('hub.challenge', '')
     else:
         a=request.get_json()
-        b=a['entry'][0]['messaging'][0]['sender']['id']
-        c=a['entry'][0]['messaging'][0]['message']['text']
-        print(b)
-        print(c)
-        thread1 = threading.Thread(target=reply, args=(b, c,))
+        fb_id=a['entry'][0]['messaging'][0]['sender']['id']
+        fb_text=a['entry'][0]['messaging'][0]['message']['text']
+        print(fb_id)
+        print(fb_text)
+        thread1 = threading.Thread(target=reply, args=(fb_id, fb_text,))
+        print("Starting thread")
         thread1.start()
     return "ok"
 
