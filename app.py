@@ -22,14 +22,15 @@ def reply(b,c):
     }
     r=json.dumps(data)
     print(r)
-    # req = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+token,json=r)
-    # print(req.content)
+    req = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token="+token,json=r)
+    print(req.content)
 
 @app.route('/',methods=['GET', 'POST'])
 def hello_world():
     if request.method=='GET':
         if (request.args.get('hub.verify_token', '') == "varsha"):
             print("succefully verified")
+            print(request.args.get('hub.challenge', ''))
             return request.args.get('hub.challenge', '')
     else:
         a=request.get_json()
