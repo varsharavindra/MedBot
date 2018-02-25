@@ -20,10 +20,10 @@ def reply(fb_id,fb_text):
       "text": fb_text
     }
     }
-    aquired_data=json.dumps(data)
-    print(aquired_data)
+    json_data=json.dumps(data)
+    print(json_data)
 
-    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=data)
+    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
     print(req.content)
 
 @app.route('/webhook',methods=['GET', 'POST'])
