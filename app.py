@@ -12,8 +12,6 @@ import uuid
 print("starting server")
 
 app=Flask(__name__)
-token="EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
-
 
 
 def reply_for_query(fb_id,fb_text):
@@ -84,7 +82,7 @@ except ImportError:
 
     )
 
-CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
+
 
 def main(msg):
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
