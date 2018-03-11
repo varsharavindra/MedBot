@@ -1,4 +1,5 @@
 from flask import Flask,request
+from model import med_query
 import threading
 import json
 import requests
@@ -22,10 +23,26 @@ def reply(fb_id,fb_text):
     "id": fb_id
     },
     "message": {
-      "text": med
-    }
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "button",
+                "text": med,
+                "buttons": [
+                    {
+                        "type": "web_url",
+                        "url": "https://medecinebot.herokuapp.com/",
+                        "title": "coming soon"
+                    },
+
+                ]
+
+            }
+        }
+      }
     }
     json_data=json.dumps(data)
+    print("What is this json data")
     print(json_data)
 
     req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
@@ -49,6 +66,12 @@ def hello_world():
         print("Starting thread")
         thread1.start()
     return "ok"
+
+@app.route('/button',methods=['GET', 'POST'])
+def button():
+    return "work in progress"
+
+
 
 # @app.route('/varsha',methods=['GET', 'POST'])
 # # def another():
