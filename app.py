@@ -31,7 +31,7 @@ def reply(fb_id,fb_text):
                 "buttons": [
                     {
                         "type": "web_url",
-                        "url": "https://medecinebot.herokuapp.com/",
+                        "url": "https://medecinebot.herokuapp.com/button",
                         "title": "coming soon"
                     },
 
@@ -69,7 +69,7 @@ def hello_world():
 
 @app.route('/button',methods=['GET', 'POST'])
 def button():
-    return "work in progress"
+    return "done by vivek"
 
 
 
