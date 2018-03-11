@@ -16,32 +16,18 @@ token="EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHR
 
 
 
-def reply(fb_id,fb_text):
-
-    if not search_user(fb_id):
-        if (session[fb_id]==None):
-            session[fb_id]="adding_name"
-            data=text_template(fb_id,"hey this is your first message,whats your name ?")
-        elif session[fb_id]=="adding_name":
-            user_name=fb_text
-            session[fb_id+":"+"user_name"]=user_name
-            session[fb_id]="adding_number"
-            data = text_template(fb_id, "please give your phone number")
-        elif session[fb_id] == "adding_nuber":
-            user_number = fb_text
-            session[fb_id + ":" + "user_number"] = user_number
-            data = text_template(fb_id, "thanks for registering")
-    else:
-
-        number,med=main(fb_text)
-        data=button_template(fb_id,fb_text,med,1)
-
+def reply_for_query(fb_id,fb_text):
+    number, med = main(fb_text)
+    data = button_template(fb_id, fb_text, med, 1)
+    reply(data)
+def reply(data):
     json_data=json.dumps(data)
     print("What is this json data")
     print(json_data)
-
     req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
     print(req.content)
+
+
 
 @app.route('/webhook',methods=['GET', 'POST'])
 def hello_world():
@@ -57,7 +43,22 @@ def hello_world():
         fb_text=a['entry'][0]['messaging'][0]['message']['text']
         print(fb_id)
         print(fb_text)
-        thread1 = threading.Thread(target=reply, args=(fb_id, fb_text,))
+        if not search_user(fb_id):
+            if (session[fb_id] == None):
+                session[fb_id] = "adding_name"
+                data = text_template(fb_id, "hey this is your first message,whats your name ?")
+            elif session[fb_id] == "adding_name":
+                user_name = fb_text
+                session[fb_id + ":" + "user_name"] = user_name
+                session[fb_id] = "adding_number"
+                data = text_template(fb_id, "please give your phone number")
+            elif session[fb_id] == "adding_nuber":
+                user_number = fb_text
+                session[fb_id + ":" + "user_number"] = user_number
+                data = text_template(fb_id, "thanks for registering")
+            reply(data)
+        else:
+            thread1 = threading.Thread(target=reply, args=(fb_id, fb_text,))
         print("Starting thread")
         thread1.start()
     return "ok"
@@ -105,5 +106,4 @@ def main(msg):
 
 
 if __name__ == '__main__':
-    # app.run(port=8000, debug=True)
-    reply("10","crocin")
+    app.run(port=8000, debug=True)
