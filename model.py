@@ -16,3 +16,7 @@ def med_query(medicines):
     cursor.execute("SELECT * from med_det where trade_name="+medicines)
     data=cursor.fetchone()
     return data
+def search_user(fb_id):
+    return False
+def add_user():
+    pass

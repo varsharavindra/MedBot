@@ -1,11 +1,13 @@
-from flask import Flask,request
-from model import med_query
+from flask import Flask,request,session
+from model import med_query,search_user
+from uitemplates import button_template,text_template
 import threading
 import json
 import requests
 import os.path
 import sys
 import uuid
+
 
 print("starting server")
 
@@ -16,32 +18,24 @@ token="EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHR
 
 def reply(fb_id,fb_text):
 
-    number,med=main(fb_text)
-    data={
-    "messaging_type": "RESPONSE",
-     "recipient": {
-    "id": fb_id
-    },
-    "message": {
-        "text":med,
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "button",
-                "text": med,
-                "buttons": [
-                    {
-                        "type": "web_url",
-                        "url": "https://medecinebot.herokuapp.com/button",
-                        "title": "coming soon"
-                    },
+    if not search_user(fb_id):
+        if (session[fb_id]==None):
+            session[fb_id]="adding_name"
+            data=text_template(fb_id,"hey this is your first message,whats your name ?")
+        elif session[fb_id]=="adding_name":
+            user_name=fb_text
+            session[fb_id+":"+"user_name"]=user_name
+            session[fb_id]="adding_number"
+            data = text_template(fb_id, "please give your phone number")
+        elif session[fb_id] == "adding_nuber":
+            user_number = fb_text
+            session[fb_id + ":" + "user_number"] = user_number
+            data = text_template(fb_id, "thanks for registering")
+    else:
 
-                ]
+        number,med=main(fb_text)
+        data=button_template(fb_id,fb_text,med,1)
 
-            }
-        }
-      }
-    }
     json_data=json.dumps(data)
     print("What is this json data")
     print(json_data)
@@ -111,4 +105,5 @@ def main(msg):
 
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    # app.run(port=8000, debug=True)
+    reply("10","crocin")
