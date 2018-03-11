@@ -23,6 +23,7 @@ def reply(fb_id,fb_text):
     "id": fb_id
     },
     "message": {
+        "text":med
         "attachment": {
             "type": "template",
             "payload": {
