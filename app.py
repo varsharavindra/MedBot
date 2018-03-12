@@ -1,6 +1,8 @@
 from flask import Flask,request,session
-from model import med_query,search_user
-from uitemplates import button_template,text_template
+
+from model import med_query,search_user,add_user
+from uitemplates import button_template,text_template,quick_reply_type
+
 import threading
 import json
 import requests
@@ -8,16 +10,19 @@ import os.path
 import sys
 import uuid
 
+from nlp import apiai_query
 
-print("starting server")
 
 app=Flask(__name__)
 
 
 def reply_for_query(fb_id,fb_text):
-    number, med = main(fb_text)
+
+    number, med = apiai_query(fb_text)
     data = button_template(fb_id, fb_text, med, 1)
     reply(data)
+
+
 def reply(data):
     json_data=json.dumps(data)
     print("What is this json data")
@@ -32,7 +37,8 @@ def hello_world():
     if request.method=='GET':
         if (request.args.get('hub.verify_token', '') == "varsha"):
             print("succefully verified")
-            print(request.args.get('hub.challenge', ''))
+
+
             return request.args.get('hub.challenge', '')
     else:
         print("got a message")
@@ -49,17 +55,30 @@ def hello_world():
                 user_name = fb_text
                 session[fb_id + ":" + "user_name"] = user_name
                 session[fb_id] = "adding_number"
-                data = text_template(fb_id, "please give your phone number")
+
+                data = text_template(fb_id, "please give your phone number",quick_reply=True,type=[quick_reply_type.phone_number])
             elif session[fb_id] == "adding_nuber":
                 user_number = fb_text
                 session[fb_id + ":" + "user_number"] = user_number
-                data = text_template(fb_id, "thanks for registering")
-            reply(data)
+                data = text_template(fb_id, "please give us your location",quick_reply=True,type=[quick_reply_type.location])
+                session[fb_id] = "getting location"
+            elif session[fb_id] == "getting location":
+                lat=a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["lat"]
+                long = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["long"]
+                data = text_template(fb_id, "thank you for registering with us")
+                user_name=session[fb_id + ":" + "user_name"]
+                user_number=session[fb_id + ":" + "user_number"]
+                add_user(user_name,user_number,lat,long)
+
+            thread1 = threading.Thread(target=reply, args=(data,))
         else:
-            thread1 = threading.Thread(target=reply, args=(fb_id, fb_text,))
+            thread1 = threading.Thread(target=reply_for_query, args=(fb_id, fb_text,))
+
         print("Starting thread")
         thread1.start()
     return "ok"
+
+
 
 @app.route('/button',methods=['GET', 'POST'])
 def button():
@@ -73,30 +92,8 @@ def button():
 # #     print(x)
 # #     return "hello"
 
-try:
-
-    import apiai
-except ImportError:
-    sys.path.append(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
-
-    )
 
 
-
-def main(msg):
-    ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
-    request = ai.text_request()
-    request.lang = 'en'  # optional, default value equal 'en'
-    request.session_id = str(uuid.uuid1())
-    request.query = msg
-    response = request.getresponse()
-    data = response.read()
-
-    data1 = json.loads(data)
-    data2=data1["result"]["parameters"]["number"]
-    data3=data1["result"]["parameters"]["medicines"]
-    return data2,data3
 # print(data['res'])
 #json.loads(var1)
 
