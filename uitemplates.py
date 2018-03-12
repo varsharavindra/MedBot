@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 from enum import Enum
 
 class quick_reply_type(Enum):
@@ -9,7 +8,7 @@ class quick_reply_type(Enum):
     email=3
 
 
->>>>>>> 5a6a11d9d31c3c97443d04237c91258854cea247
+
 def number_of_buttons(type, url, title):
     var = {
         "type": type,
@@ -44,11 +43,9 @@ def button_template(fb_id,fb_text,med,n):
     }
     return button_data
 
-<<<<<<< HEAD
-def text_template(fb_id,fb_text):
-=======
+
 def text_template(fb_id, reply_message,quick_reply=False,**kargs):
->>>>>>> 5a6a11d9d31c3c97443d04237c91258854cea247
+
     text_data = {
         "messaging_type": "RESPONSE",
         "recipient": {
@@ -56,12 +53,7 @@ def text_template(fb_id, reply_message,quick_reply=False,**kargs):
         },
         "message": {
 
-<<<<<<< HEAD
-            "text": fb_text
-        }
-    }
-    return text_data
-=======
+
             "text": reply_message,
 
         }
@@ -98,4 +90,4 @@ def quick_reply(type,**kwargs):
 
         }
     return reply
->>>>>>> 5a6a11d9d31c3c97443d04237c91258854cea247
+
