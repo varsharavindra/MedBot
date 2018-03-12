@@ -10,7 +10,7 @@ import uuid
 from nlp import apiai_query
 
 app=Flask(__name__)
-
+app.config['SECRET_KEY']="abcdefghijk"
 
 def reply_for_query(fb_id,fb_text):
     number, med = apiai_query(fb_text)
