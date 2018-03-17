@@ -1,5 +1,5 @@
-from flask import Flask,request,session
-
+from flask import Flask,request
+from werkzeug.contrib.cache import SimpleCache
 from model import med_query,search_user,add_user
 from uitemplates import button_template,text_template,quick_reply_type
 
@@ -14,8 +14,11 @@ from nlp import apiai_query
 
 token="EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
 CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
+session=dict()
+
+
 app=Flask(__name__)
-app.config['SECRET_KEY']="abcdefghijk"
+app.config['SECRET_KEY']="abcdefghijn"
 
 def reply_for_query(fb_id,fb_text):
 
@@ -28,8 +31,8 @@ def reply(data):
     json_data=json.dumps(data)
     print("What is this json data")
     print(json_data)
-    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
-    print(req.content)
+    # req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
+    # print(req.content)
 
 
 
@@ -49,16 +52,17 @@ def hello_world():
         print(fb_id)
         print(fb_text)
         if not search_user(fb_id):
-            if session.get(fb_id) is None:
+            if session.get(fb_id,None) is None:
+                print("new user")
                 session[fb_id] = "adding_name"
-                data = text_template(fb_id, "hey this is your first message,whats your name ?")
+                data = text_template(fb_id, "hey this is your first message,whats your name ?",)
             elif session[fb_id] == "adding_name":
                 user_name = fb_text
                 session[fb_id + ":" + "user_name"] = user_name
                 session[fb_id] = "adding_number"
 
                 data = text_template(fb_id, "please give your phone number",quick_reply=True,type=[quick_reply_type.phone_number])
-            elif session[fb_id] == "adding_nuber":
+            elif session[fb_id] == "adding_number":
                 user_number = fb_text
                 session[fb_id + ":" + "user_number"] = user_number
                 data = text_template(fb_id, "please give us your location",quick_reply=True,type=[quick_reply_type.location])
@@ -71,12 +75,9 @@ def hello_world():
                 user_name=session[fb_id + ":" + "user_name"]
                 user_number=session[fb_id + ":" + "user_number"]
                 add_user(user_name,user_number,lat,long)
-            else:
-                session.pop(fb_id)
-                session.pop(fb_id + ":" + "user_name")
-                session.pop(fb_id+":"+"user_number")
-                session.clear()
-
+                session[fb_id]=None
+                session[fb_id + ":" + "user_number"]=None
+                session[fb_id + ":" + "user_name"]=None
 
             thread1 = threading.Thread(target=reply, args=(data,))
         else:
