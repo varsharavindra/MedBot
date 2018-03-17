@@ -2,6 +2,7 @@ from flaskext.mysql import MySQL
 
 def med():
     mysql = MySQL()
+    app=None
     app.config['MYSQL_DATABASE_USER'] = 'root'
     app.config['MYSQL_DATABASE_PASSWORD'] = 'vaishnavi'
     app.config['MYSQL_DATABASE_DB'] = 'medicine'

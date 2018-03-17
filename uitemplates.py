@@ -59,23 +59,25 @@ def text_template(fb_id, reply_message,quick_reply=False,**kargs):
         }
 
     }
+
     quick_replies=[]
     if quick_reply:
-        for t in kargs[type]:
-            quick_replies.append(quick_reply(t,kargs))
+        for t in kargs["type"]:
+            quick_replies.append(quick_reply_template(t,kargs))
 
-    text_data["message"]["quick_replies"]=quick_replies
+        text_data["message"]["quick_replies"]=quick_replies
     return text_data
 
 
-def quick_reply(type,**kwargs):
+def quick_reply_template(type,kwargs):
     reply=None
+
     if type==quick_reply_type.text:
         reply={
             "content_type": "text",
-            "title":kwargs[text],
-            "payload":kwargs[payload],
-            "image_url":kwargs[image_url]
+            "title":kwargs["title"],
+            "payload":kwargs["payload"],
+            "image_url":kwargs["image_url"]
         }
     elif type==quick_reply_type.location:
         reply={
@@ -91,3 +93,6 @@ def quick_reply(type,**kwargs):
         }
     return reply
 
+if __name__== "__main__":
+    dict=text_template("10","hi",quick_reply=True,type=[quick_reply_type.text],title="Sending text",payload="Extra info",image_url="example.com/xyz.jpg")
+    print(dict)

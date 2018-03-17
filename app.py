@@ -12,7 +12,8 @@ import uuid
 
 from nlp import apiai_query
 
-
+token="EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
+CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
 app=Flask(__name__)
 app.config['SECRET_KEY']="abcdefghijk"
 
@@ -48,7 +49,7 @@ def hello_world():
         print(fb_id)
         print(fb_text)
         if not search_user(fb_id):
-            if (session[fb_id] == None):
+            if session.get(fb_id) is None:
                 session[fb_id] = "adding_name"
                 data = text_template(fb_id, "hey this is your first message,whats your name ?")
             elif session[fb_id] == "adding_name":
