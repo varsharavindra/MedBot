@@ -14,7 +14,7 @@ from nlp import apiai_query
 
 
 app=Flask(__name__)
-
+app.config['SECRET_KEY']="abcdefghijk"
 
 def reply_for_query(fb_id,fb_text):
 
@@ -63,12 +63,19 @@ def hello_world():
                 data = text_template(fb_id, "please give us your location",quick_reply=True,type=[quick_reply_type.location])
                 session[fb_id] = "getting location"
             elif session[fb_id] == "getting location":
+                session[fb_id] = "registration done"
                 lat=a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["lat"]
                 long = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["long"]
                 data = text_template(fb_id, "thank you for registering with us")
                 user_name=session[fb_id + ":" + "user_name"]
                 user_number=session[fb_id + ":" + "user_number"]
                 add_user(user_name,user_number,lat,long)
+            else:
+                session.pop(fb_id)
+                session.pop(fb_id + ":" + "user_name")
+                session.pop(fb_id+":"+"user_number")
+                session.clear()
+
 
             thread1 = threading.Thread(target=reply, args=(data,))
         else:
