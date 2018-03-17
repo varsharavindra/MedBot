@@ -48,21 +48,23 @@ def hello_world():
         print("got a message")
         a=request.get_json()
         fb_id=a['entry'][0]['messaging'][0]['sender']['id']
-        fb_text=a['entry'][0]['messaging'][0]['message']['text']
+
         print(fb_id)
-        print(fb_text)
+
         if not search_user(fb_id):
             if session.get(fb_id,None) is None:
                 print("new user")
                 session[fb_id] = "adding_name"
                 data = text_template(fb_id, "hey this is your first message,whats your name ?",)
             elif session[fb_id] == "adding_name":
+                fb_text = a['entry'][0]['messaging'][0]['message']['text']
                 user_name = fb_text
                 session[fb_id + ":" + "user_name"] = user_name
                 session[fb_id] = "adding_number"
 
-                data = text_template(fb_id, "please give your phone number",quick_reply=True,type=[quick_reply_type.phone_number])
+                data = text_template(fb_id, "hey "+user_name+" please give your phone number",quick_reply=True,type=[quick_reply_type.phone_number])
             elif session[fb_id] == "adding_number":
+                fb_text = a['entry'][0]['messaging'][0]['message']['text']
                 user_number = fb_text
                 session[fb_id + ":" + "user_number"] = user_number
                 data = text_template(fb_id, "please give us your location",quick_reply=True,type=[quick_reply_type.location])
@@ -81,6 +83,7 @@ def hello_world():
 
             thread1 = threading.Thread(target=reply, args=(data,))
         else:
+            fb_text = a['entry'][0]['messaging'][0]['message']['text']
             thread1 = threading.Thread(target=reply_for_query, args=(fb_id, fb_text,))
 
         print("Starting thread")
