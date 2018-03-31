@@ -1,3 +1,6 @@
+import uuid
+import json
+import apiai
 try:
 
     import apiai
@@ -8,7 +11,7 @@ except ImportError:
     )
 
 
-
+CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
 def apiai_query(msg):
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
     request = ai.text_request()

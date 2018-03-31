@@ -1,6 +1,6 @@
 
 from enum import Enum
-
+import json
 class quick_reply_type(Enum):
     text=0
     phone_number=1
@@ -58,15 +58,35 @@ def text_template(fb_id, reply_message,quick_reply=False,**kargs):
 
         }
 
+
     }
 
     quick_replies=[]
     if quick_reply:
-        for t in kargs["type"]:
-            quick_replies.append(quick_reply_template(t,kargs))
+        for t in kargs["data"]:
+
+            quick_replies.append(t)
 
         text_data["message"]["quick_replies"]=quick_replies
+    print(text_data)
     return text_data
+
+
+
+class quick_reply_template_class():
+
+    def  __init__(self,type,**kwargs):
+        if type==quick_reply_type.text:
+           self.content_type="text"
+           self.title=kwargs["title"]
+           self.payload=kwargs["payload"]
+           self.image_url=kwargs["image_url"]
+
+        elif type==quick_reply_type.phone_number:
+            self.content_type="user_phone_number"
+        elif type==quick_reply_type.location:
+            self.content_type="user_location"
+
 
 
 def quick_reply_template(type,kwargs):
@@ -94,5 +114,8 @@ def quick_reply_template(type,kwargs):
     return reply
 
 if __name__== "__main__":
-    dict=text_template("10","hi",quick_reply=True,type=[quick_reply_type.text],title="Sending text",payload="Extra info",image_url="example.com/xyz.jpg")
-    print(dict)
+    # dict=text_template("10","hi",quick_reply=True,type=[quick_reply_type.text],title="Sending text",payload="Extra info",image_url="example.com/xyz.jpg")
+    # print(dict)
+    user_data = quick_reply_template_class(quick_reply_type.phone_number)
+    data = json.dumps(user_data.__dict__)
+    print(data)
