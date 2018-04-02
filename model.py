@@ -96,9 +96,22 @@ def search_uploader_for_med(fb_id,data2,data3):
                     where a.qty>=%d and u.cust_id=a.cust_id and u.cust_id in(select cust_id from med_acc where med_id in(select med_id from med_det where trade_name=%s))""", (data2,data3))
     user_information = cursor.fetchone()
     while user_information is not None:
-        with open(str(fb_id) + "_requested_info" + ".txt", "a") as f:
+        with open(str(fb_id) + "_requested_full_qty" + ".txt", "a") as f:
             f.write(str(user_information[0])+"\n"+str(user_information[1])+"\n"+str(user_information[2])+"\n"+str(user_information[3])+"\n"+str(user_information[4])+"\n"+str(user_information[5])+"\n")
         user_information = cursor.fetchone()
+    db.commit()
+
+    cursor.execute("""SELECT u.cust_id,u.uname,u.location,u.phoneno,u.email,a.qty
+                        from users u,med_acc a
+                        where a.qty<%d and u.cust_id=a.cust_id and u.cust_id in(select cust_id from med_acc where med_id in(select med_id from med_det where trade_name=%s))""",
+                   (data2, data3))
+    user_information_1 = cursor.fetchone()
+    while user_information_1 is not None:
+        with open(str(fb_id) + "_requested_less_qty" + ".txt", "a") as f:
+            f.write(str(user_information_1[0]) + "\n" + str(user_information_1[1]) + "\n" + str(
+                user_information_1[2]) + "\n" + str(user_information_1[3]) + "\n" + str(user_information_1[4]) + "\n" + str(
+                user_information_1[5]) + "\n")
+        user_information_1 = cursor.fetchone()
     db.commit()
     db.close()
 

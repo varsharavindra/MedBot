@@ -125,17 +125,29 @@ def hello_world():
 def reply_for_request():
     a = request.get_json()
     fb_id = a['entry'][0]['messaging'][0]['sender']['id']
-    with open(str(fb_id) + "_requested_info" + ".txt", "r") as f:
+    with open(str(fb_id) + "_requested_full_qty" + ".txt", "r") as f:
         uploader_cust_id=f.readline()
         uploader_uname=f.readline()
         uploader_location=f.readline()
         uploader_phoneno=f.readline()
         uploader_email=f.readline()
         uploader_qty=f.readline()
-    os.remove(str(fb_id) + "_requested_info" + ".txt")
+    os.remove(str(fb_id) + "_requested_full_qty" + ".txt")
     data_name=text_template(fb_id,uploader_uname)
     json_data_name=json.dumps(data_name)
     print(json_data_name)
+
+    with open(str(fb_id) + "_requested_less_qty" + ".txt", "r") as f:
+        uploader_cust_id_1 = f.readline()
+        uploader_uname_1 = f.readline()
+        uploader_location_1 = f.readline()
+        uploader_phoneno_1 = f.readline()
+        uploader_email_1 = f.readline()
+        uploader_qty_1 = f.readline()
+    os.remove(str(fb_id) + "_requested_less_qty" + ".txt")
+    data_name_1 = text_template(fb_id, uploader_uname_1)
+    json_data_name_1 = json.dumps(data_name)
+    print(json_data_name_1)
 
 
 @app.route('/button',methods=['GET', 'POST'])
