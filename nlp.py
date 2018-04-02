@@ -1,5 +1,6 @@
 import uuid
 import json
+import os
 import apiai
 try:
 
