@@ -12,7 +12,7 @@ except ImportError:
     )
 
 
-CLIENT_ACCESS_TOKEN =
+CLIENT_ACCESS_TOKEN = ''
 def apiai_query(msg):
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
     request = ai.text_request()

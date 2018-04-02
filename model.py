@@ -1,10 +1,11 @@
 from flask import render_template, request
 from flask import Flask
 from flaskext.mysql import MySQL
+
 import os.path
 from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class
 import json
-import nlp
+from nlp import apiai_query
 
 app=Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = ''
@@ -85,6 +86,22 @@ def search_user(fb_id):
     db.close()
     print(id_data)
     return id_data
+
+def search_uploader_for_med(fb_id,data2,data3):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""SELECT u.cust_id,u.uname,u.location,u.phoneno,u.email,a.qty
+                    from users u,med_acc a
+                    where a.qty>=%d and u.cust_id=a.cust_id and u.cust_id in(select cust_id from med_acc where med_id in(select med_id from med_det where trade_name=%s))""", (data2,data3))
+    user_information = cursor.fetchone()
+    while user_information is not None:
+        with open(str(fb_id) + "_requested_info" + ".txt", "a") as f:
+            f.write(str(user_information[0])+"\n"+str(user_information[1])+"\n"+str(user_information[2])+"\n"+str(user_information[3])+"\n"+str(user_information[4])+"\n"+str(user_information[5])+"\n")
+        user_information = cursor.fetchone()
+    db.commit()
+    db.close()
+
 
 
 

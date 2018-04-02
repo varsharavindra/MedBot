@@ -1,7 +1,8 @@
 from flask import Flask,request
 from werkzeug.contrib.cache import SimpleCache
-from model import med_query,insert_query_users,search_user
+from model import med_query,insert_query_users,search_user,search_uploader_for_med
 from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class
+from nlp import apiai_query
 
 import threading
 import json
@@ -11,10 +12,10 @@ import sys
 import uuid
 import nlp
 
-from nlp import apiai_query
 
-token="hero"
-CLIENT_ACCESS_TOKEN =
+
+token=""
+CLIENT_ACCESS_TOKEN = ''
 session=dict()
 
 
@@ -121,7 +122,20 @@ def hello_world():
 
     return "ok"
 
-
+def reply_for_request():
+    a = request.get_json()
+    fb_id = a['entry'][0]['messaging'][0]['sender']['id']
+    with open(str(fb_id) + "_requested_info" + ".txt", "r") as f:
+        uploader_cust_id=f.readline()
+        uploader_uname=f.readline()
+        uploader_location=f.readline()
+        uploader_phoneno=f.readline()
+        uploader_email=f.readline()
+        uploader_qty=f.readline()
+    os.remove(str(fb_id) + "_requested_info" + ".txt")
+    data_name=text_template(fb_id,uploader_uname)
+    json_data_name=json.dumps(data_name)
+    print(json_data_name)
 
 
 @app.route('/button',methods=['GET', 'POST'])
