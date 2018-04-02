@@ -14,12 +14,12 @@ import nlp
 from nlp import apiai_query
 
 token="hero"
-CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
+CLIENT_ACCESS_TOKEN =
 session=dict()
 
 
 app=Flask(__name__)
-app.config['SECRET_KEY']="abcdefghijn"
+app.config['SECRET_KEY']=""
 
 def reply_for_query(fb_id,fb_text):
 
