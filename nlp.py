@@ -14,7 +14,7 @@ except ImportError:
     )
 
 
-CLIENT_ACCESS_TOKEN = ''
+CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
 
 General_Talk="I0"
 Query_medicine= "I1"
