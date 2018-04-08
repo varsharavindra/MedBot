@@ -80,18 +80,19 @@ def reply_for_query(fb_id, fb_text):
         intent, parameter = apiai_query(fb_text)
 
         if intent == General_Talk:
-            text1 = quick_reply_template_class("type", title="need medicine", image_url="", payload="medicine.need")
-            text2 = quick_reply_template_class("type", title="update medicine", image_url="", payload="medicine.update")
+            text1 = quick_reply_template_class("text", title="need medicine", image_url="", payload="medicine.need")
+            text2 = quick_reply_template_class("text", title="update medicine", image_url="", payload="medicine.update")
             data = text_template(fb_id, "How can i help you", quick_reply=True,
                                  type=[quick_reply_type.text, quick_reply_type.text], data=[text1.__dict__, text2.__dict__])
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
             if not parameter.get("drug", None) is None:
                 drug = parameter["drug"]
+                brand = drug
             else:
-                brand = parameter["drug"]
+                brand = parameter["brand"]
 
-            brand = drug  # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
+              # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
 
