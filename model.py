@@ -8,10 +8,10 @@ import json
 from nlp import apiai_query
 
 app=Flask(__name__)
-app.config['MYSQL_DATABASE_USER'] = ''
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = ''
-app.config['MYSQL_DATABASE_HOST'] = ''
+app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'
+app.config['MYSQL_DATABASE_PASSWORD'] = '3c67c0ac'
+app.config['MYSQL_DATABASE_DB'] = 'heroku_f410f3c3cc58ba7'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 def search_user(fb_id):
     mysql = med()
