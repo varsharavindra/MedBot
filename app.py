@@ -158,7 +158,7 @@ def hello_world():
                                          type=[quick_reply_type.phone_number], data=[phone_number_data.__dict__])
 
                 if status == "adding_number":
-                    number = a['entry'][0]['messaging'][0]['message']['quick_reply']['payload']
+                    number = a['entry'][0]['messaging'][0]['message']['text']
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(number + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
@@ -168,7 +168,7 @@ def hello_world():
                                          type=[quick_reply_type.email], data=[email_data.__dict__])
 
                 if status == "getting email":
-                    email = a['entry'][0]['messaging'][0]['message']['quick_reply']['payload']
+                    email = a['entry'][0]['messaging'][0]['message']['text']
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(email + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:

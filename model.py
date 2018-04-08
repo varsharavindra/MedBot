@@ -21,7 +21,7 @@ def search_user(fb_id):
     row = cursor.fetchone()
     db.close()
     print(row)
-    return row
+    return len(row[0])>0
 
 class vendor:
     def __init__(self,cust_id,uname,location,phone,email,qty):
