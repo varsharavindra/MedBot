@@ -20,8 +20,10 @@ def search_user(fb_id):
     cursor.execute("""SELECT * from users where cust_id='%s'""" % (fb_id))
     row = cursor.fetchone()
     db.close()
-    print(row)
-    return len(row[0])>0
+    if row == None:
+        return False
+    else:
+        return True
 
 class vendor:
     def __init__(self,cust_id,uname,location,phone,email,qty):
