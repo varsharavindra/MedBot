@@ -11,7 +11,7 @@ app=Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'
 app.config['MYSQL_DATABASE_PASSWORD'] = '3c67c0ac'
 app.config['MYSQL_DATABASE_DB'] = 'heroku_f410f3c3cc58ba7'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-05.cleardb.net'
 
 def search_user(fb_id):
     mysql = med()

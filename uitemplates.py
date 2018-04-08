@@ -51,7 +51,7 @@ def button_template(fb_id,fb_text,med,n):
 
 class base_reply_template:
 
-    def init(self,messaging_type:str,fb_id:str,message:object):
+    def init(self,messaging_type,fb_id,message):
         self.messaging_type=messaging_type
         self.recipient={"id":fb_id}
         self.message=message
