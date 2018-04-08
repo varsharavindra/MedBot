@@ -1,9 +1,9 @@
 from flask import Flask,request
 from werkzeug.contrib.cache import SimpleCache
-from model import med_query,insert_query_users,search_user,search_uploader_for_med
-from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class
+from model import med_query,insert_query_users,search_user_for_med,current_user,search_user
+from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class,generic_template_class
 from nlp import apiai_query
-
+from uitemplates import genereic_template_elements,button
 import threading
 import json
 import requests
@@ -11,24 +11,59 @@ import os.path
 import sys
 import uuid
 import nlp
+from geopy.distance import vincenty
+import gpxpy.geo
+from math import radians
 
-
-
+threshold=0
 token=""
 CLIENT_ACCESS_TOKEN = ''
 session=dict()
-
+base_url="https://localhost:8000/"
+static_url=base_url+"static/"
+user_url=static_url+"user.jpg"
 
 app=Flask(__name__)
 app.config['SECRET_KEY']=""
+def get_location_url(lat,long):
+    return "www.google.com"
 
 def reply_for_query(fb_id,fb_text):
+    distance=[]
+    quantity, name_of_med = apiai_query(fb_text)
+    potential_vendor_information,impotential_vendor_information = search_user_for_med(fb_id,quantity,name_of_med)
+    #data = button_template(fb_id, fb_text, med, 1)
+    current_user_location=current_user(fb_id)
+    latitude,longitude = current_user_location.split(":")
+    if len(potential_vendor_information) > threshold:
+        for obj in potential_vendor_information:
+            distance.append(nearest_location(latitude,longitude,obj.lat,obj.long))
+    else:
+        pass
+    dist = sorted(range(len(distance)), key=lambda k: distance[k])
+    elements=[]
+    for i in dist:
+        location = get_location_url(obj.lat,obj.long)
+        user_name=potential_vendor_information[i].uname
+        subtitle="Phone: "+str(potential_vendor_information[i].phone)+"\nQuantity: "+str(potential_vendor_information[i].qty)
+        btn=button("web_url",location,"got to location")
+        elements.append(genereic_template_elements(user_name,image_url=user_url,subtitle=subtitle,button=[btn.__dict__]).__dict__)
+    generic_data = generic_template_class(fb_id,elements)
+    print(generic_data.__dict__)
+    reply(generic_data.__dict__)
 
-    # number, med = apiai_query(fb_text)
-    # data = button_template(fb_id, fb_text, med, 1)
-    data=None
-    reply(data)
+def nearest_location(lat1,long1,lat2,long2):
 
+
+     latitude1 = radians(float(lat1))
+     longitude1 = radians(float(long1))
+
+
+     latitude2 = radians(float(lat2))
+     longitude2 = radians(float(long2))
+
+     dist = gpxpy.geo.haversine_distance(latitude1, longitude1, latitude2, longitude2)
+     return dist
 
 def reply(data):
     json_data=json.dumps(data)
@@ -150,9 +185,7 @@ def reply_for_request():
     print(json_data_name_1)
 
 
-@app.route('/button',methods=['GET', 'POST'])
-def button():
-    return "done by vivek"
+
 
 
 
