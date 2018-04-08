@@ -6,6 +6,7 @@ import os.path
 from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class
 import json
 from nlp import apiai_query
+import util
 
 app=Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'

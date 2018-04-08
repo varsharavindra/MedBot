@@ -4,8 +4,12 @@ import pickle
 SUFFIX= "_context.txt"
 contexts_path="contexts/"
 
+if not os.path.exists(contexts_path):
+    os.makedirs(contexts_path)
 
 def create_context(fb_id,status,obj):
+    if not os.path.exists(contexts_path):
+        os.makedirs(contexts_path)
     if fb_id in os.listdir(contexts_path):
         os.remove(contexts_path+ fb_id + SUFFIX)
         with open(fb_id + SUFFIX, "w") as f:
