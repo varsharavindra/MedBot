@@ -123,8 +123,8 @@ def reply(data):
     json_data = json.dumps(data)
     print("What is this json data")
     print(json_data)
-    # req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
-    # print(req.content)
+    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
+    print(req.content)
 
 
 @app.route('/webhook', methods=['GET', 'POST'])
