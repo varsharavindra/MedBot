@@ -137,9 +137,8 @@ def hello_world():
     else:
         print("got a message")
         a = request.get_json()
+        print(a)
         fb_id = a['entry'][0]['messaging'][0]['sender']['id']
-
-        print(fb_id)
 
         if not search_user(fb_id):
             file_names = os.listdir(os.path.dirname(__file__))
