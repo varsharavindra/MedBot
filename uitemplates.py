@@ -181,7 +181,7 @@ class quick_reply_template_class():
         elif type==quick_reply_type.phone_number:
             self.content_type="user_phone_number"
         elif type==quick_reply_type.location:
-            self.content_type="user_location"
+            self.content_type="location"
         else:
             self.content_type = "user_email"
 
