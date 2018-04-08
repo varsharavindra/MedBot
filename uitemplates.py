@@ -19,9 +19,13 @@ def number_of_buttons(type, url, title):
     return var
 
 
+
+
+
 def button_template(fb_id,fb_text,med,n):
     button_data = {
         "messaging_type": "RESPONSE",
+
         "recipient": {
             "id": fb_id
         },
@@ -51,6 +55,7 @@ class base_reply_template:
         self.messaging_type=messaging_type
         self.recipient={"id":fb_id}
         self.message=message
+
 
 
 

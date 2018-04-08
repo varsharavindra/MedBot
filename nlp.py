@@ -2,6 +2,8 @@ import uuid
 import json
 import os
 import apiai
+
+
 try:
 
     import apiai
@@ -14,7 +16,9 @@ except ImportError:
 
 CLIENT_ACCESS_TOKEN = ''
 
-
+General_Talk="I0"
+Query_medicine= "I1"
+Upload_medicine= "I2"
 def apiai_query(msg):
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
     request = ai.text_request()
@@ -26,17 +30,17 @@ def apiai_query(msg):
 
     data1 = json.loads(data)
     if data1["result"]["source"] == "domains":
-        return data1["result"]["fulfillment"]["speech"],"I0"
+        return General_Talk,data1["result"]["fulfillment"]["speech"],
     else:
-        if data1["result"]["metadata"]["intentName"] == "I1":
-            return data1["result"]["parameters"]["number"]
+        if data1["result"]["metadata"]["intentName"] == Query_medicine:
+            return Query_medicine, data1["result"]["parameters"],
         else:
-            if data1["result"]["metadata"] == "I2":
-                return None
+            if data1["result"]["metadata"] == Upload_medicine:
+                return Upload_medicine, "None"
 
 # print(data['res'])
 #json.loads(var1)
 
 if __name__ == '__main__':
-    msg=main("How to update my crocin tablets?")
+    msg=apiai("How to update my crocin tablets?")
     print (msg)
