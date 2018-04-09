@@ -4,7 +4,7 @@ from model import med_query, insert_query_users, search_user_for_med, current_us
 from uitemplates import button_template, text_template, quick_reply_type, quick_reply_template_class, \
     generic_template_class
 from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
-from uitemplates import genereic_template_elements, button
+from uitemplates import genereic_template_elements, buttons
 import threading
 import json
 import requests
@@ -21,7 +21,8 @@ threshold = 0
 token = "EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
 CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
 session = dict()
-base_url = "https://localhost:8000/"
+# base_url = "https://localhost:8000/"
+base_url="https://medecinebot.herokuapp.com/"
 static_url = base_url + "static/"
 user_url = static_url + "user.jpg"
 
@@ -79,18 +80,19 @@ def reply_for_query(fb_id, fb_text):
         intent, parameter = apiai_query(fb_text)
 
         if intent == General_Talk:
-            text1 = quick_reply_template_class("type", title="need medicine", image_url="", payload="medicine.need")
-            text2 = quick_reply_template_class("type", title="update medicine", image_url="", payload="medicine.update")
+            text1 = quick_reply_template_class("text", title="need medicine", image_url="", payload="medicine.need")
+            text2 = quick_reply_template_class("text", title="update medicine", image_url="", payload="medicine.update")
             data = text_template(fb_id, "How can i help you", quick_reply=True,
-                                 type=[quick_reply_type.text, quick_reply_type.text], data=[text1, text2])
+                                 type=[quick_reply_type.text, quick_reply_type.text], data=[text1.__dict__, text2.__dict__])
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
             if not parameter.get("drug", None) is None:
                 drug = parameter["drug"]
+                brand = drug
             else:
-                brand = parameter["drug"]
+                brand = parameter["brand"]
 
-            brand = drug  # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
+              # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
 
@@ -122,8 +124,8 @@ def reply(data):
     json_data = json.dumps(data)
     print("What is this json data")
     print(json_data)
-    # req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
-    # print(req.content)
+    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
+    print(req.content)
 
 
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -136,9 +138,8 @@ def hello_world():
     else:
         print("got a message")
         a = request.get_json()
+        print(a)
         fb_id = a['entry'][0]['messaging'][0]['sender']['id']
-
-        print(fb_id)
 
         if not search_user(fb_id):
             file_names = os.listdir(os.path.dirname(__file__))
@@ -157,7 +158,7 @@ def hello_world():
                                          type=[quick_reply_type.phone_number], data=[phone_number_data.__dict__])
 
                 if status == "adding_number":
-                    number = a['entry'][0]['messaging'][0]['message']['quick_reply']['payload']
+                    number = a['entry'][0]['messaging'][0]['message']['text']
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(number + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
@@ -167,7 +168,7 @@ def hello_world():
                                          type=[quick_reply_type.email], data=[email_data.__dict__])
 
                 if status == "getting email":
-                    email = a['entry'][0]['messaging'][0]['message']['quick_reply']['payload']
+                    email = a['entry'][0]['messaging'][0]['message']['text']
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(email + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:

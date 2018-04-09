@@ -6,12 +6,15 @@ import os.path
 from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class
 import json
 from nlp import apiai_query
+import util
 
 app=Flask(__name__)
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'nrukesari'
-app.config['MYSQL_DATABASE_DB'] = 'medicine'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
+app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'
+app.config['MYSQL_DATABASE_PASSWORD'] = '3c67c0ac'
+app.config['MYSQL_DATABASE_DB'] = 'heroku_f410f3c3cc58ba7'
+app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-05.cleardb.net'
+
 
 def search_user(fb_id):
     mysql = med()
@@ -21,7 +24,11 @@ def search_user(fb_id):
     row = cursor.fetchone()
     db.close()
     print(row)
-    return row[0]
+    if row == None:
+        return False
+    else:
+        return True
+
 
 class vendor:
     def __init__(self,cust_id,uname,location,phone,email,qty):
