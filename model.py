@@ -8,9 +8,9 @@ import json
 from nlp import apiai_query
 
 app=Flask(__name__)
-app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'
-app.config['MYSQL_DATABASE_PASSWORD'] = '3c67c0ac'
-app.config['MYSQL_DATABASE_DB'] = 'heroku_f410f3c3cc58ba7'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'nrukesari'
+app.config['MYSQL_DATABASE_DB'] = 'medicine'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 def search_user(fb_id):
@@ -21,7 +21,7 @@ def search_user(fb_id):
     row = cursor.fetchone()
     db.close()
     print(row)
-    return row
+    return row[0]
 
 class vendor:
     def __init__(self,cust_id,uname,location,phone,email,qty):

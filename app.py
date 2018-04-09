@@ -13,7 +13,7 @@ import sys
 import uuid
 import nlp
 import util
-from geopy.distance import vincenty
+
 import gpxpy.geo
 from math import radians
 

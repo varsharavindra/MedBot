@@ -59,7 +59,7 @@ class base_reply_template:
 
 
 
-class button:
+class buttons:
     def __init__(self,type,url,title):
         self.type=type
         self.url=url
@@ -215,7 +215,7 @@ if __name__== "__main__":
     # user_data = quick_reply_template_class(quick_reply_type.phone_number)
     #
     # data = json.dumps(user_data.__dict__)
-    elements=[genereic_template_elements(title="kumar",image_url="fdf",sub_title="5tab",button=button("web_url","www.google.com","location").__dict__).__dict__]
+    elements=[genereic_template_elements(title="kumar",image_url="fdf",sub_title="5tab",buttons=buttons("web_url","www.google.com","location").__dict__).__dict__]
     print(elements)
     obj=generic_template_class("100",elements)
     print(obj.__dict__)
