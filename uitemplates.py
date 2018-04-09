@@ -59,7 +59,7 @@ class base_reply_template:
 
 
 
-class buttons:
+class button:
     def __init__(self,type,url,title):
         self.type=type
         self.url=url

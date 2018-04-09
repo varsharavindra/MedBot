@@ -4,7 +4,7 @@ from model import med_query, insert_query_users, search_user_for_med, current_us
 from uitemplates import button_template, text_template, quick_reply_type, quick_reply_template_class, \
     generic_template_class
 from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
-from uitemplates import genereic_template_elements, buttons
+from uitemplates import genereic_template_elements, button
 import threading
 import json
 import requests
@@ -58,7 +58,7 @@ def query_medicine_responce_builder(fb_id, brand, quantity):
             potential_vendor_information[i].qty)
         btn = button("web_url", location, "got to location")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
-                                                   button=[btn.__dict__]).__dict__)
+                                                   buttons=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
     return generic_data
 
