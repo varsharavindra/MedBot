@@ -2,6 +2,7 @@ import uuid
 import json
 import os
 import apiai
+import sys
 
 
 try:

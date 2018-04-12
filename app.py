@@ -47,7 +47,7 @@ def query_medicine_responce_builder(fb_id, brand, quantity):
         for obj in potential_vendor_information:
             distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
     else:
-        # TODO : HANDLE CASE WHEN NOBODYA HAS REQUIRED AMOUNT OF MEDICIN
+        # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
         pass
     dist = sorted(range(len(distance)), key=lambda k: distance[k])
     elements = []
@@ -56,9 +56,9 @@ def query_medicine_responce_builder(fb_id, brand, quantity):
         user_name = potential_vendor_information[i].uname
         subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
             potential_vendor_information[i].qty)
-        btn = button("web_url", location, "got to location")
+        btn = buttons("web_url", location, "go to location")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
-                                                   button=[btn.__dict__]).__dict__)
+                                                   buttons=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
     return generic_data
 
@@ -84,6 +84,7 @@ def reply_for_query(fb_id, fb_text):
             text2 = quick_reply_template_class("text", title="update medicine", image_url="", payload="medicine.update")
             data = text_template(fb_id, "How can i help you", quick_reply=True,
                                  type=[quick_reply_type.text, quick_reply_type.text], data=[text1.__dict__, text2.__dict__])
+            button_data=buttons("web_url",)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
             if not parameter.get("drug", None) is None:
@@ -101,9 +102,9 @@ def reply_for_query(fb_id, fb_text):
             else:
                 # TODO Handle case when user texts only with medicine name
                 util.create_context(fb_id, "MISSING_QTY", (brand))
-                data = text_template(fb_id, "How mcuh quantity you need", quick_reply=False)
+                data = text_template(fb_id, "How much quantity you need", quick_reply=False)
         else:
-            data = text_template(fb_id, "this feature is yet to be implimented", quick_reply=False)
+            data = text_template(fb_id, "this feature is yet to be implemented", quick_reply=False)
 
 
 
@@ -210,39 +211,39 @@ def hello_world():
     return "ok"
 
 
-def reply_for_request():
-    a = request.get_json()
-    fb_id = a['entry'][0]['messaging'][0]['sender']['id']
-    with open(str(fb_id) + "_requested_full_qty" + ".txt", "r") as f:
-        uploader_cust_id = f.readline()
-        uploader_uname = f.readline()
-        uploader_location = f.readline()
-        uploader_phoneno = f.readline()
-        uploader_email = f.readline()
-        uploader_qty = f.readline()
-    os.remove(str(fb_id) + "_requested_full_qty" + ".txt")
-    data_name = text_template(fb_id, uploader_uname)
-    json_data_name = json.dumps(data_name)
-    print(json_data_name)
+# def reply_for_request():
+#     a = request.get_json()
+#     fb_id = a['entry'][0]['messaging'][0]['sender']['id']
+#     with open(str(fb_id) + "_requested_full_qty" + ".txt", "r") as f:
+#         uploader_cust_id = f.readline()
+#         uploader_uname = f.readline()
+#         uploader_location = f.readline()
+#         uploader_phoneno = f.readline()
+#         uploader_email = f.readline()
+#         uploader_qty = f.readline()
+#     os.remove(str(fb_id) + "_requested_full_qty" + ".txt")
+#     data_name = text_template(fb_id, uploader_uname)
+#     json_data_name = json.dumps(data_name)
+#     print(json_data_name)
 
-    with open(str(fb_id) + "_requested_less_qty" + ".txt", "r") as f:
-        uploader_cust_id_1 = f.readline()
-        uploader_uname_1 = f.readline()
-        uploader_location_1 = f.readline()
-        uploader_phoneno_1 = f.readline()
-        uploader_email_1 = f.readline()
-        uploader_qty_1 = f.readline()
-    os.remove(str(fb_id) + "_requested_less_qty" + ".txt")
-    data_name_1 = text_template(fb_id, uploader_uname_1)
-    json_data_name_1 = json.dumps(data_name)
-    print(json_data_name_1)
+    # with open(str(fb_id) + "_requested_less_qty" + ".txt", "r") as f:
+    #     uploader_cust_id_1 = f.readline()
+    #     uploader_uname_1 = f.readline()
+    #     uploader_location_1 = f.readline()
+    #     uploader_phoneno_1 = f.readline()
+    #     uploader_email_1 = f.readline()
+    #     uploader_qty_1 = f.readline()
+    # os.remove(str(fb_id) + "_requested_less_qty" + ".txt")
+    # data_name_1 = text_template(fb_id, uploader_uname_1)
+    # json_data_name_1 = json.dumps(data_name)
+    # print(json_data_name_1)
 
 
-# @app.route('/varsha',methods=['GET', 'POST'])
-# # def another():
-# #     x=request.get_json()
-# #     print(x)
-# #     return "hello"
+ @app.route('/varsha',methods=['GET', 'POST'])
+ # def another():
+ #     x=request.get_json()
+ #     print(x)
+ #     return "hello"
 
 
 # print(data['res'])
