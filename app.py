@@ -4,7 +4,7 @@ from model import med_query, insert_query_users, search_user_for_med, current_us
 from uitemplates import button_template, text_template, quick_reply_type, quick_reply_template_class, \
     generic_template_class
 from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
-from uitemplates import genereic_template_elements, buttons
+from uitemplates import genereic_template_elements, button
 import threading
 import json
 import requests
