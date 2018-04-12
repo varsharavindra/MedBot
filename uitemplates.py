@@ -22,7 +22,7 @@ def number_of_buttons(type, url, title):
 
 
 
-def button_template(fb_id,fb_text,med,n):
+def button_template(fb_id,med,n):
     button_data = {
         "messaging_type": "RESPONSE",
 

@@ -26,7 +26,7 @@ base_url="https://medecinebot.herokuapp.com/"
 static_url = base_url + "static/"
 user_url = static_url + "user.jpg"
 
-util
+#util
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "abcdefghijn"
@@ -80,11 +80,10 @@ def reply_for_query(fb_id, fb_text):
         intent, parameter = apiai_query(fb_text)
 
         if intent == General_Talk:
-            text1 = quick_reply_template_class("text", title="need medicine", image_url="", payload="medicine.need")
-            text2 = quick_reply_template_class("text", title="update medicine", image_url="", payload="medicine.update")
+            text1 = button_template(fb_id,"Need medicine",1)
+            text2 = button_template(fb_id,"Update medicine",1)
             data = text_template(fb_id, "How can i help you", quick_reply=True,
                                  type=[quick_reply_type.text, quick_reply_type.text], data=[text1.__dict__, text2.__dict__])
-            button_data=buttons("web_url",)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
             if not parameter.get("drug", None) is None:
@@ -239,7 +238,7 @@ def hello_world():
     # print(json_data_name_1)
 
 
- @app.route('/varsha',methods=['GET', 'POST'])
+#@app.route('/varsha',methods=['GET', 'POST'])
  # def another():
  #     x=request.get_json()
  #     print(x)
