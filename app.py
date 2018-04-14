@@ -4,7 +4,8 @@ from model import med_query, insert_query_users, search_user_for_med, current_us
 from uitemplates import button_template, text_template, quick_reply_type, quick_reply_template_class, \
     generic_template_class
 from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
-from uitemplates import genereic_template_elements, button
+from uitemplates import genereic_template_elements, buttons,button_template_class
+from util import *
 import threading
 import json
 import requests
@@ -77,13 +78,14 @@ def nearest_location(lat1, long1, lat2, long2):
 def reply_for_query(fb_id, fb_text):
     distance = []
     if util.get_context(fb_id) is None:
+        text=fb_text["text"]
         intent, parameter = apiai_query(fb_text)
 
         if intent == General_Talk:
-            text1 = button_template(fb_id,"Need medicine",1)
-            text2 = button_template(fb_id,"Update medicine",1)
-            data = text_template(fb_id, "How can i help you", quick_reply=True,
-                                 type=[quick_reply_type.text, quick_reply_type.text], data=[text1.__dict__, text2.__dict__])
+            button1=buttons("postback",title="need medicine",payload="NEED")
+            button2 = buttons("postback", title="upload medicine", payload="UPDATE")
+            data = button_template_class("How can i help you",buttons=[button1,button2])
+            create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
             if not parameter.get("drug", None) is None:
@@ -110,15 +112,20 @@ def reply_for_query(fb_id, fb_text):
     elif util.get_context(fb_id) == "MISSING_QTY":
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
-        quantity = fb_text
+        quantity = fb_text["text"]
         generic_data = query_medicine_responce_builder(fb_id, brand, quantity)
         data = generic_data.__dict__
-
+    elif util.get_context(fb_id) =="intent_type":
+         util.remove_context(fb_id)
+         if fb_text["postback"]["payload"]=="NEED":
+            data=text_template(fb_id,"Which medicine do you need?")
+            create_context(fb_id, "need_med", None)
+    elif util.get_context(fb_id) == "need_med":
+        util.remove_context(fb_id)
+        data = text_template(fb_id, "How much quantity?")
+    user_text = fb_text["text"]
+    create_context(fb_id, "MISSING_QTY", (user_text))
     reply(data)
-
-
-
-
 
 def reply(data):
     json_data = json.dumps(data)
@@ -191,6 +198,9 @@ def hello_world():
                     os.remove(str(fb_id) + ".txt")
                     os.remove(str(fb_id) + "_status" + ".txt")
                     data = text_template(fb_id, "thank you for registering with us")
+                    f = open('welcome_message.txt','r')
+                    file_contents=f.read()
+                    data = text_template(fb_id, file_contents)
 
             else:
                 fd = open(str(fb_id) + ".txt", "w")
@@ -201,7 +211,7 @@ def hello_world():
 
             thread1 = threading.Thread(target=reply, args=(data,))
         else:
-            fb_text = a['entry'][0]['messaging'][0]['message']['text']
+            fb_text = a['entry'][0]['messaging'][0]['message']
             thread1 = threading.Thread(target=reply_for_query, args=(fb_id, fb_text,))
 
         print("Starting thread")

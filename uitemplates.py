@@ -59,11 +59,12 @@ class base_reply_template:
 
 
 
-class button:
-    def __init__(self,type,url,title):
+class buttons:
+    def __init__(self,type,**kwargs):
         self.type=type
-        self.url=url
-        self.title=title
+        for key, value in kwargs.items():
+                setattr(self, key, value)
+
 
 class genereic_template_elements:
     def __init__(self,title,**kwargs):
@@ -88,6 +89,11 @@ class message:
     def __init__(self,**kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+class button_template_class(base_reply_template):
+    def __init__(self,title,buttons):
+        attachment = attachment_template("template", payload=payload_template("button",text=title,buttons=buttons).__dict__)
+        msg = message(attachment=attachment.__dict__)
 
 
 class generic_template_class(base_reply_template):
@@ -217,7 +223,7 @@ if __name__== "__main__":
     # user_data = quick_reply_template_class(quick_reply_type.phone_number)
     #
     # data = json.dumps(user_data.__dict__)
-    elements=[genereic_template_elements(title="kumar",image_url="fdf",sub_title="5tab",buttons=buttons("web_url","www.google.com","location").__dict__).__dict__]
+    elements=[genereic_template_elements(title="varsha",image_url="fdf",sub_title="5tab",buttons=buttons("web_url","www.google.com","location").__dict__).__dict__]
     print(elements)
     obj=generic_template_class("100",elements)
     print(obj.__dict__)

@@ -1,0 +1,29 @@
+Welcome to the medicine bot!
+Just search for a medicine and get the nearest location of availability of that medicine!
+These medicines may not only be found in the pharmacies and hospitals around you, but also in your neighbourhood.
+Worry not, for the medicines you are about to "take" from your next-door homebody is tractable by you from the billing information
+he shows.
+
+That's not all, why fret about throwing away extra medicine when you can be the headspring of some such service too?
+Join our initiative to share medicines which is otherwise is unused or thrown after expiry.
+
+All you need to do is tell your pharmacy guy that you want to help out this way and he, in turn will upload your medicine details
+to our system.
+
+"Commeth the hour, cometh the man!"
+When someone needs the medicine you have, your location is shared. You, then, may tell if you still have the medicine you agreed
+to share or if its out-of-stock.
+If you still nurture the idea of sharing, confirm your availability to that peerson and show the medicine-detail bill message
+when he drops by!
+
+Say, you're on the receiving end of the system, you also may drop a message here asking for a medicine, locations of the people
+having these messages will be shown.
+If no one has your medicine, locations of pharmacies and hospitals near you are given at the least.
+
+NOTE: Only generic medicines, and nothing else such as narcotics, psychedelic, psychotropic or any other illegal drugs that hold
+a potential danger are to be shared here.
+Any drugs that require prescriptions, syrups, opened ointment tubes, opened suspension-powder packets are not to be shared.
+
+If any of the above rules are found to be violated, according disciplinary action will be taken
+
+Hope you have a smooth experience!

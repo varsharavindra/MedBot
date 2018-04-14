@@ -1,8 +1,7 @@
-# import pickle
-#
-# pickle.loads("english_ace_binary.pickle")
-
-from flask import Flask
+f=open('welcome_message.txt','r')
+file_contents=f.read()
+print(file_contents)
+f.close()
 
 
 
