@@ -21,13 +21,14 @@ from math import radians
 threshold = 0
 token = "EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
 CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
+google_places_api_key="AIzaSyCfbetwFSxJnIGfVy1j5Abh4z0xcNPQwNQ"
 session = dict()
 # base_url = "https://localhost:8000/"
 base_url="https://medecinebot.herokuapp.com/"
 static_url = base_url + "static/"
 user_url = static_url + "user.jpg"
 
-#util
+util
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "abcdefghijn"
@@ -61,6 +62,32 @@ def query_medicine_responce_builder(fb_id, brand, quantity):
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                    buttons=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
+
+    if not potential_vendor_information and impotential_vendor_information:
+        request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?\
+        location="+latitude+","+longitude+"&type=pharmacy&radius=1000&key="+google_places_api_key)
+        print(request_pharmacy.content)
+        pharmacy_data = request_pharmacy.json()
+        # print(pharmacy_data['results'][0]['geometry']['location']['lat'])
+        pharmacy_name = []
+        pharmacy_latitude = []
+        pharmacy_longitude = []
+        for p in pharmacy_data['results']:
+            pharmacy_latitude.append(p['geometry']['location']['lat'])
+            pharmacy_longitude.append(p['geometry']['location']['lng'])
+        print(pharmacy_latitude)
+        print(pharmacy_longitude)
+        print(pharmacy_name)
+        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
+            print(x,y,z)
+            pharmacy_location = get_location_url(x, y)
+            user_name = z
+            btn = buttons("web_url", pharmacy_location, "go to location")
+            elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=False,
+                                                       buttons=[btn.__dict__]).__dict__)
+        generic_data = generic_template_class(fb_id, elements)
+
+
     return generic_data
 
 
@@ -131,7 +158,8 @@ def reply(data):
     json_data = json.dumps(data)
     print("What is this json data")
     print(json_data)
-    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, headers={"Content-Type": "application/json"},data=json_data)
+    req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, \
+                        headers={"Content-Type": "application/json"},data=json_data)
     print(req.content)
 
 
