@@ -14,14 +14,15 @@ import sys
 import uuid
 import nlp
 import util
+import re
 
 import gpxpy.geo
 from math import radians
 
 threshold = 0
-token = "EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
-CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
-google_places_api_key="AIzaSyCfbetwFSxJnIGfVy1j5Abh4z0xcNPQwNQ"
+token = ""
+CLIENT_ACCESS_TOKEN = ''
+google_places_api_key=""
 session = dict()
 # base_url = "https://localhost:8000/"
 base_url="https://medecinebot.herokuapp.com/"
@@ -31,7 +32,7 @@ user_url = static_url + "user.jpg"
 util
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "abcdefghijn"
+app.config['SECRET_KEY'] = ""
 
 
 def get_location_url(lat, long):
@@ -81,10 +82,10 @@ def query_medicine_responce_builder(fb_id, brand, quantity):
         for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
             print(x,y,z)
             pharmacy_location = get_location_url(x, y)
-            user_name = z
-            btn = buttons("web_url", pharmacy_location, "go to location")
-            elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=False,
-                                                       buttons=[btn.__dict__]).__dict__)
+            pharma_name = z
+            btn1 = buttons("web_url", pharmacy_location, "go to location")
+            elements.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
+                                                       buttons=[btn1.__dict__]).__dict__)
         generic_data = generic_template_class(fb_id, elements)
 
 
@@ -184,6 +185,11 @@ def hello_world():
 
                 if status == "adding_name":
                     name = a['entry'][0]['messaging'][0]['message']['text']
+                    while True:
+                        if re.match("^[[A-Za-z_]+[ ']*[A-Za-z_]*]+$", name):
+                            break
+                        else:
+                            data = text_template(fb_id,"Please enter a valid name")
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(name + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
@@ -194,6 +200,11 @@ def hello_world():
 
                 if status == "adding_number":
                     number = a['entry'][0]['messaging'][0]['message']['text']
+                    while True:
+                        if re.match("((\+*)((0[ -]+)*|(91 )*)(\d{12}+|\d{10}+))|\d{5}([- ]*)\d{6}", number):
+                            break
+                        else:
+                            data = text_template(fb_id,"Please enter a valid phone number")
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(number + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
@@ -204,6 +215,11 @@ def hello_world():
 
                 if status == "getting email":
                     email = a['entry'][0]['messaging'][0]['message']['text']
+                    while True:
+                        if re.match("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", email):
+                            break
+                        else:
+                            data = text_template(fb_id,"Please enter a valid email")
                     with open(str(fb_id) + ".txt", "a") as f:
                         f.write(email + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
@@ -215,6 +231,11 @@ def hello_world():
                 if status == "getting location":
                     lat = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["lat"]
                     long = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["long"]
+                    while True:
+                        if ((re.match("^[-+]?[0-9]*\.?[0-9]+$", lat)) and (re.match("^[-+]?[0-9]*\.?[0-9]+$", lat))):
+                            break
+                        else:
+                            data = text_template(fb_id,"Please enter a valid location")
                     location = str(lat) + ":" + str(long)
 
                     with open(str(fb_id) + ".txt", "r") as f:
