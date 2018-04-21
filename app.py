@@ -41,27 +41,41 @@ def get_location_url(lat, long):
 
 
 def query_medicine_responce_builder(fb_id, brand, quantity):
-    distance = []
+    potential_distance = []
     potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
                                                                                        brand)
     current_user_location = current_user(fb_id)
     latitude, longitude = current_user_location.split(":")
     if len(potential_vendor_information) > threshold:
         for obj in potential_vendor_information:
-            distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
+            potential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
     else:
-        # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
-        pass
-    dist = sorted(range(len(distance)), key=lambda k: distance[k])
+        impotential_distance = []
+        for obj in impotential_vendor_information:
+            impotential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
+
+    potential_dist = sorted(range(len(potential_distance)), key=lambda k: potential_distance[k])
+    impotential_dist = sorted(range(len(impotential_distance)), key=lambda k: impotential_distance[k])
     elements = []
-    for i in dist:
+    for i in potential_dist:
         location = get_location_url(obj.lat, obj.long)
         user_name = potential_vendor_information[i].uname
         subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
             potential_vendor_information[i].qty)
-        btn = buttons("web_url", location, "go to location")
+        btn = buttons("web_url", location, "go to location in maps")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                    buttons=[btn.__dict__]).__dict__)
+    generic_data = generic_template_class(fb_id, elements)
+
+    elements1 = []
+    for i in impotential_dist:
+        location1 = get_location_url(obj.lat,obj.long)
+        user_name1 = impotential_vendor_information[i].uname
+        subtitle1 = "Phone: " + str(impotential_vendor_information[i].phone) + "\nQuantity: " + str(
+            impotential_vendor_information[i].qty)
+        btn1 = buttons("web_url",location,"Go to location in maps")
+        elements1.append(genereic_template_elements(user_name1,image_url=user_url, subtitle=subtitle1,
+                                                   buttons=[btn1.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
 
     if not potential_vendor_information and impotential_vendor_information:
@@ -106,13 +120,13 @@ def nearest_location(lat1, long1, lat2, long2):
 def reply_for_query(fb_id, fb_text):
     distance = []
     if util.get_context(fb_id) is None:
-        text=fb_text["text"]
+        text = fb_text["text"]
         intent, parameter = apiai_query(fb_text)
 
         if intent == General_Talk:
-            button1=buttons("postback",title="need medicine",payload="NEED")
-            button2 = buttons("postback", title="upload medicine", payload="UPDATE")
-            data = button_template_class("How can i help you",buttons=[button1,button2])
+            button1=buttons("postback",title="Need Medicine",payload="NEED")
+            button2 = buttons("postback", title="Upload Medicine", payload="UPDATE")
+            data = button_template_class("How may I help you?",buttons=[button1,button2])
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
@@ -131,29 +145,57 @@ def reply_for_query(fb_id, fb_text):
             else:
                 # TODO Handle case when user texts only with medicine name
                 util.create_context(fb_id, "MISSING_QTY", (brand))
-                data = text_template(fb_id, "How much quantity you need", quick_reply=False)
+                data = text_template(fb_id, "How much quantity do you need?")
         else:
-            data = text_template(fb_id, "this feature is yet to be implemented", quick_reply=False)
+            data = text_template(fb_id, "This feature is yet to be implemented", quick_reply=False)
 
 
-
-    elif util.get_context(fb_id) == "MISSING_QTY":
-        brand = util.get_context_data(fb_id)
-        util.remove_context(fb_id)
-        quantity = fb_text["text"]
-        generic_data = query_medicine_responce_builder(fb_id, brand, quantity)
-        data = generic_data.__dict__
     elif util.get_context(fb_id) =="intent_type":
-         util.remove_context(fb_id)
-         if fb_text["postback"]["payload"]=="NEED":
-            data=text_template(fb_id,"Which medicine do you need?")
-            create_context(fb_id, "need_med", None)
-    elif util.get_context(fb_id) == "need_med":
         util.remove_context(fb_id)
-        data = text_template(fb_id, "How much quantity?")
-    user_text = fb_text["text"]
-    create_context(fb_id, "MISSING_QTY", (user_text))
+        if fb_text["postback"]["payload"]=="NEED":
+            data = text_template(fb_id,"Which medicine do you need?")
+            need_med = fb_text["text"]
+            create_context(fb_id, "need_med", (need_med))
+        elif fb_text["postback"]["payload"]=="UPDATE":
+            data = text_template(fb_id,"Which medicine do you want to update?")
+            update_med = fb_text["text"]
+            create_context(fb_id, "update_med", (update_med))
+
+        if util.get_context(fb_id) == "need_med":
+            med_name = util.get_context_data(fb_id)
+            util.remove_context(fb_id)
+            data = text_template(fb_id, "How much quantity?")
+            create_context(fb_id, "MISSING_QTY", (med_name))
+
+        elif util.get_context(fb_id) == "update_med":
+            med_name = util.get_context_data(fb_id)
+            util.remove_context(fb_id)
+            data = text_template(fb_id,"How much quantity?")
+            create_context(fb_id, "qty", (med_name))
+
+
+
+        elif util.get_context(fb_id) == "MISSING_QTY":
+            brand = util.get_context_data(fb_id)
+            util.remove_context(fb_id)
+            quantity = fb_text["text"]
+            generic_data = query_medicine_responce_builder(fb_id, brand, quantity)
+            data = generic_data.__dict__
+
+
+        elif util.get_context(fb_id) == "qty":
+            trade_name = util.get_context_data(fb_id)
+            util.remove_context(fb_id)
+            quantity = fb_text["text"]
+
+
+
+
+
+
+
     reply(data)
+
 
 def reply(data):
     json_data = json.dumps(data)
@@ -201,7 +243,7 @@ def hello_world():
                 if status == "adding_number":
                     number = a['entry'][0]['messaging'][0]['message']['text']
                     while True:
-                        if re.match("((\+*)((0[ -]+)*|(91 )*)(\d{12}+|\d{10}+))|\d{5}([- ]*)\d{6}", number):
+                        if re.match("^[789]\d{9}$", number):
                             break
                         else:
                             data = text_template(fb_id,"Please enter a valid phone number")
@@ -267,6 +309,10 @@ def hello_world():
         thread1.start()
 
     return "ok"
+
+def receive_bill_data(fb_id):
+    bill_request = requests.get("")
+    bill_json = bill_request.json()
 
 
 # def reply_for_request():
