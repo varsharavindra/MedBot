@@ -152,9 +152,105 @@ def current_user(fb_id):
     print(row)
     return row[0]
 
+
+def search_by_phone(phone_number):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""SELECT cust_id from users where phoneno = '%s'"""%(phone_number))
+    print("""SELECT cust_id from users where phoneno = '%s'"""%(phone_number))
+    row = cursor.fetchone()
+    db.close()
+    if row is not None:
+        return row[0]
+    else:
+        return False
+
+
+
+def search_trade_for_drug(fb_id, drug):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute(""" select trade_name from med_det where drugname= "%s" and med_id in(select
+                med_id from med_acc where cust_id="%s")"""%(drug,fb_id))
+    row=cursor.fetchone()
+    db.close()
+    return row[0]
+
+def get_med_info(batch_id,cust_id):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("select l.mfg_date, l.exp_date,l.cost from med_list as l where l.med_id in\
+ (select d.med_id from med_det d where d.med_id in(select a.med_id from med_acc a where cust_id='%s' and batch_id='%s'))"% (cust_id,batch_id))
+    data=cursor.fetchone()
+    print(data)
+    return data
+
+def get_med_data(batch_id,med_id):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""SELECT mfg_date,exp_date,cost from med_list where batch_id='%s' and med_id='%s'"""%(batch_id,med_id))
+    data=cursor.fetchone()
+    print(data)
+    db.close()
+    return data
+
+def get_drug_trade(med_id):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""SELECT drug_name,trade_name from med_det where med_id='%s'"""%(med_id))
+    data = cursor.fetchone()
+    db.close()
+    print(data[0])
+    return data
+
+def get_email(phone_number):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""SELECT email from users where phoneno='%s'"""%(phone_number))
+    data = cursor.fetchone()
+    db.close()
+    print(data[0])
+    return data
+
+def get_med_for_user(fb_id):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""SELECT trade_name from med_det where med_id in(select med_id from med_acc where cust_id='%s')"""%fb_id)
+    data = cursor.fetchone()
+    db.close()
+    print(data[0])
+    return data
+
+def update_quantity(fb_id,tradename,qty):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""update med_acc set qty='%d' where cust_id='%s' and med_id in(select med_id from med_det 
+                        where trade_name='%s')"""%(qty, fb_id, tradename))
+    data = cursor.fetchone()
+    cursor.execute("""SELECT qty from med_acc where cust_id='%s'"""%(fb_id))
+    row=cursor.fetchone()
+    db.close()
+    print(row)
+
+
+
+
 if __name__ == '__main__':
-    #    insert_query_drug("abc","xyz")
+
     #     insert_query_med_det("100","abc","zts","xyz")
     #   insert_query_users('vivek', '37.483872693672,-122.14900441942', '7406160779', 'v@gmail.com', '11')
     #   x=search_user(100)
-    search_user_for_med("100","10","crocin")
+    # search_user_for_med("100","10","crocin")
+    # get_med_data("c300","200")
+    # get_drug_trade("200")
+    # get_email("9986427925")
+    # get_med_for_user("100")
+    update_quantity("100","crocin",7)

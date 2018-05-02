@@ -1,10 +1,12 @@
 from flask import Flask, request
 from werkzeug.contrib.cache import SimpleCache
-from model import med_query, insert_query_users, search_user_for_med, current_user, search_user
+from model import med_query, insert_query_users, search_user_for_med, current_user, search_user, \
+    search_by_phone, search_trade_for_drug, get_med_info,get_drug_trade,get_med_data, get_email, get_med_for_user, \
+    update_quantity
 from uitemplates import button_template, text_template, quick_reply_type, quick_reply_template_class, \
-    generic_template_class
+    generic_template_class,text_template_class
 from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
-from uitemplates import genereic_template_elements, buttons,button_template_class
+from uitemplates import genereic_template_elements, buttons,button_template_class,subscription
 from util import *
 import threading
 import json
@@ -15,12 +17,14 @@ import uuid
 import nlp
 import util
 import re
+import smtplib
 
 import gpxpy.geo
 from math import radians
 
 threshold = 0
 token = ""
+
 CLIENT_ACCESS_TOKEN = ''
 google_places_api_key=""
 session = dict()
@@ -40,7 +44,7 @@ def get_location_url(lat, long):
 
 
 
-def query_medicine_responce_builder(fb_id, brand, quantity):
+def query_medicine_response_builder(fb_id, brand, quantity):
     potential_distance = []
     potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
                                                                                        brand)
@@ -126,73 +130,86 @@ def reply_for_query(fb_id, fb_text):
         if intent == General_Talk:
             button1=buttons("postback",title="Need Medicine",payload="NEED")
             button2 = buttons("postback", title="Upload Medicine", payload="UPDATE")
-            data = button_template_class("How may I help you?",buttons=[button1,button2])
+            data = button_template_class("How may I help you?", buttons=[button1,button2])
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
             if not parameter.get("drug", None) is None:
                 drug = parameter["drug"]
-                brand = drug
+                # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
+                trade_name =search_trade_for_drug(fb_id, drug)
+                create_context(fb_id,"MISSING_QTY", (trade_name))
+
             else:
                 brand = parameter["brand"]
+                create_context(fb_id, "MISSING_QTY", (brand))
 
-              # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
 
-                generic_data = query_medicine_responce_builder(fb_id, brand, quantity)
+                generic_data = query_medicine_response_builder(fb_id, brand, quantity)
                 data = generic_data.__dict__
             else:
                 # TODO Handle case when user texts only with medicine name
                 util.create_context(fb_id, "MISSING_QTY", (brand))
                 data = text_template(fb_id, "How much quantity do you need?")
         else:
-            data = text_template(fb_id, "This feature is yet to be implemented", quick_reply=False)
+            #TODO:handle case for update medicine
+            list_of_med = get_med_for_user(fb_id)
+            display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
+                         "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
+            for med_list in list_of_med:
+                display_msg+="\n"+med_list+"\n"
+            data = text_template(fb_id,display_msg+"\nWhich medicine's quantity do you want to reduce?")
+            create_context(fb_id,"reduce_qty",None)
 
 
     elif util.get_context(fb_id) =="intent_type":
         util.remove_context(fb_id)
         if fb_text["postback"]["payload"]=="NEED":
             data = text_template(fb_id,"Which medicine do you need?")
-            need_med = fb_text["text"]
-            create_context(fb_id, "need_med", (need_med))
+
+            create_context(fb_id, "need_med", None)
         elif fb_text["postback"]["payload"]=="UPDATE":
             data = text_template(fb_id,"Which medicine do you want to update?")
-            update_med = fb_text["text"]
-            create_context(fb_id, "update_med", (update_med))
+            create_context(fb_id, "update_med", None)
 
-        if util.get_context(fb_id) == "need_med":
-            med_name = util.get_context_data(fb_id)
+    elif util.get_context(fb_id) == "need_med":
             util.remove_context(fb_id)
+            med_name = fb_text['text']
             data = text_template(fb_id, "How much quantity?")
             create_context(fb_id, "MISSING_QTY", (med_name))
 
-        elif util.get_context(fb_id) == "update_med":
-            med_name = util.get_context_data(fb_id)
+    elif util.get_context(fb_id) == "update_med":
             util.remove_context(fb_id)
-            data = text_template(fb_id,"How much quantity?")
-            create_context(fb_id, "qty", (med_name))
+            med_name = fb_text['text']
+            data = text_template(fb_id,"How much quantity reduced?")
+            #Todo: Mention previous quantity
+            create_context(fb_id, "reduce_qty", (med_name))
 
 
 
-        elif util.get_context(fb_id) == "MISSING_QTY":
-            brand = util.get_context_data(fb_id)
-            util.remove_context(fb_id)
-            quantity = fb_text["text"]
-            generic_data = query_medicine_responce_builder(fb_id, brand, quantity)
-            data = generic_data.__dict__
+    elif util.get_context(fb_id) == "MISSING_QTY":
+        brand = util.get_context_data(fb_id)
+        util.remove_context(fb_id)
+        quantity = fb_text["text"]
+        generic_data = query_medicine_response_builder(fb_id, brand, quantity)
+        data = generic_data.__dict__
 
 
-        elif util.get_context(fb_id) == "qty":
-            trade_name = util.get_context_data(fb_id)
-            util.remove_context(fb_id)
-            quantity = fb_text["text"]
+    elif util.get_context(fb_id) == "reduce_qty":
+        util.remove_context(fb_id)
+        name_of_med = fb_text['text']
+        data = text_template(fb_id, "What quantity of this medicine is left?")
+        create_context(fb_id, "upload_qty", (name_of_med))
 
-
-
-
-
-
+    elif util.get_context(fb_id) == "upload_qty":
+        medi_name = util.get_context_data(fb_id)
+        util.remove_context(fb_id)
+        qty_of_med = fb_text["text"]
+        #Todo: med_id is unique for every batch id?
+        update_quantity(fb_id,medi_name, qty_of_med)
+        data = text_template(fb_id, "The quantity of "+medi_name+" has been successfully updated")
 
     reply(data)
 
@@ -227,13 +244,9 @@ def hello_world():
 
                 if status == "adding_name":
                     name = a['entry'][0]['messaging'][0]['message']['text']
-                    while True:
-                        if re.match("^[[A-Za-z_]+[ ']*[A-Za-z_]*]+$", name):
-                            break
-                        else:
-                            data = text_template(fb_id,"Please enter a valid name")
+                    v_name = validate_name(fb_id,name)
                     with open(str(fb_id) + ".txt", "a") as f:
-                        f.write(name + "\n")
+                        f.write(v_name + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
                         f.write("adding_number")
                     phone_number_data = quick_reply_template_class(quick_reply_type.phone_number)
@@ -242,13 +255,10 @@ def hello_world():
 
                 if status == "adding_number":
                     number = a['entry'][0]['messaging'][0]['message']['text']
-                    while True:
-                        if re.match("^[789]\d{9}$", number):
-                            break
-                        else:
-                            data = text_template(fb_id,"Please enter a valid phone number")
+                    v_number = validate_phone(fb_id, number)
+
                     with open(str(fb_id) + ".txt", "a") as f:
-                        f.write(number + "\n")
+                        f.write(v_number + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
                         f.write("getting email")
                     email_data = quick_reply_template_class(quick_reply_type.email)
@@ -257,13 +267,9 @@ def hello_world():
 
                 if status == "getting email":
                     email = a['entry'][0]['messaging'][0]['message']['text']
-                    while True:
-                        if re.match("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", email):
-                            break
-                        else:
-                            data = text_template(fb_id,"Please enter a valid email")
+                    v_email = validate_email(fb_id, email)
                     with open(str(fb_id) + ".txt", "a") as f:
-                        f.write(email + "\n")
+                        f.write(v_email + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
                         f.write("getting location")
                     location_data = quick_reply_template_class(quick_reply_type.location)
@@ -273,12 +279,8 @@ def hello_world():
                 if status == "getting location":
                     lat = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["lat"]
                     long = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["long"]
-                    while True:
-                        if ((re.match("^[-+]?[0-9]*\.?[0-9]+$", lat)) and (re.match("^[-+]?[0-9]*\.?[0-9]+$", lat))):
-                            break
-                        else:
-                            data = text_template(fb_id,"Please enter a valid location")
-                    location = str(lat) + ":" + str(long)
+                    v_lat, v_long = validate_location(fb_id, lat, long)
+                    location = str(v_lat) + ":" + str(v_long)
 
                     with open(str(fb_id) + ".txt", "r") as f:
                         user_name = f.readline()
@@ -288,7 +290,7 @@ def hello_world():
                     insert_query_users(user_name, location, user_phone, user_email, fb_id)
                     os.remove(str(fb_id) + ".txt")
                     os.remove(str(fb_id) + "_status" + ".txt")
-                    data = text_template(fb_id, "thank you for registering with us")
+                    data = text_template(fb_id, "Thank you for registering with us")
                     f = open('welcome_message.txt','r')
                     file_contents=f.read()
                     data = text_template(fb_id, file_contents)
@@ -298,7 +300,7 @@ def hello_world():
                 fd.close()
                 with open(str(fb_id) + "_status" + ".txt", "w") as f:
                     status = f.write("adding_name")
-                data = text_template(fb_id, "hey this is your first message,whats your name ?")
+                data = text_template(fb_id, "Hey! This is your first message, what's your name ?")
 
             thread1 = threading.Thread(target=reply, args=(data,))
         else:
@@ -310,9 +312,98 @@ def hello_world():
 
     return "ok"
 
-def receive_bill_data(fb_id):
-    bill_request = requests.get("")
-    bill_json = bill_request.json()
+def validate_name(fb_id,name):
+    while True:
+        if not re.match("^[[A-Za-z_]+[ ']*[A-Za-z_]*]+$", name):
+            data = text_template(fb_id, "Please enter a valid name")
+        else:
+            break
+    return name
+
+def validate_phone(fb_id, number):
+    while True:
+        if not re.match("^[789]\d{9}$", number):
+            data = text_template(fb_id, "Please enter a valid phone number")
+        else:
+            break
+    return number
+
+def validate_email(fb_id, email):
+    while True:
+        if not re.match(
+                "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
+                email):
+            data = text_template(fb_id, "Please enter a valid email")
+        else:
+            break
+    return email
+
+def validate_location(fb_id, lat, long):
+    while True:
+        if not ((re.match("^[-+]?[0-9]*\.?[0-9]+$", lat)) and (re.match("^[-+]?[0-9]*\.?[0-9]+$", long))):
+            data = text_template(fb_id, "Please enter a valid location")
+        else:
+            break
+    return lat, long
+
+def get_shop_name(xyz):
+    return "pass"
+
+def send_bill_information(cust_id,**kwargs):
+    mydict={'username': 'vivek', 'phone': '8088432316', 'email': 'vivekstarstar', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
+
+    phone_number = mydict['phone']
+    shop_name=get_shop_name(cust_id)
+
+    recipient_id = search_by_phone(phone_number)
+
+    text="Hey thanks for billing at "+shop_name+"! Following is your bill information \n"
+    display_bill = []
+    total_cost=0
+    for medicine in mydict['data']:
+        batch_id=medicine['batch_id']
+        med_id=medicine['med_id']
+        (mfg,exp,cost) = get_med_data(batch_id,med_id)
+        drug,trade=get_drug_trade(med_id)
+        qty=medicine["qty"]
+        tcost=int(qty)*int(cost)
+        temp="tablate:"+trade+",qty:"+qty+",cost:"+str(tcost)+",exp:"+str(exp)+"\n"
+        total_cost+=tcost
+        text+=temp
+    text+="total cost:"+str(total_cost)+"\n"
+    print(text)
+    if not recipient_id is None:
+        data = text_template_class(recipient_id,text,subscription_message=True).__dict__
+        print(data)
+        reply(data)
+    else:
+        # Todo:send mail to this new user
+        gmail_user = 'medbotizdr@gmail.com'
+        gmail_password = 'vvvvrvvvvr'
+        #TODO: how to get email of this customer
+        customer_email = mydict['email']
+        sent_from = gmail_user
+        to = [customer_email]
+        subject = 'Medicine Bot to share medicines!'
+        body = "Dear Customer,\nIf you would like to share the extra medicines bought by you now, kindly like our" \
+               "facebook page, In Zone drug remedy\n" \
+               "Thanks!"
+
+        email_text = """\  
+        %s
+        """ % (sent_from, ", ".join(to), subject, body)
+        message = 'Subject: {}\n\n{}'.format(subject, email_text)
+
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.ehlo()
+            server.login(gmail_user, gmail_password)
+            server.sendmail(sent_from, to, message)
+            server.close()
+
+            print('Email sent!')
+        except:
+            print('Something went wrong...')
 
 
 # def reply_for_request():
@@ -350,9 +441,8 @@ def receive_bill_data(fb_id):
  #     return "hello"
 
 
-# print(data['res'])
-# json.loads(var1)
-
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    send_bill_information(1835953359813263)
+    #app.run(port=8000, debug=True)
+

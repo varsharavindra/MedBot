@@ -20,7 +20,7 @@ def create_context(fb_id,status,obj):
 def get_context(fb_id):
     if fb_id in os.listdir(contexts_path):
        with open(fb_id+SUFFIX,"r") as f:
-           data=f.readline()
+           data = f.readline()
        return data
     else:
         return None

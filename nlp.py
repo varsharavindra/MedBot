@@ -20,6 +20,7 @@ CLIENT_ACCESS_TOKEN = ''
 General_Talk="I0"
 Query_medicine= "I1"
 Upload_medicine= "I2"
+
 def apiai_query(msg):
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
     request = ai.text_request()
