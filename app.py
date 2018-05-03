@@ -24,9 +24,9 @@ from math import radians
 import datetime
 
 threshold = 0
-token = ""
-CLIENT_ACCESS_TOKEN = 'EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu'
-google_places_api_key="ab47593acb7f45c68ca4ffe296db1885"
+token = "EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
+CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
+google_places_api_key="AIzaSyCfbetwFSxJnIGfVy1j5Abh4z0xcNPQwNQ"
 session = dict()
 
 # base_url = "https://localhost:8000/"
@@ -34,7 +34,7 @@ base_url="https://medecinebot.herokuapp.com/"
 static_url = base_url + "static/"
 user_url = static_url + "user.jpg"
 
-util
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "abcdefghijn"
