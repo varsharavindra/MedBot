@@ -284,9 +284,9 @@ def hello_world():
 
                 if status == "adding_name":
                     name = a['entry'][0]['messaging'][0]['message']['text']
-                    v_name = validate_name(fb_id,name)
+                    #v_name = validate_name(fb_id,name)
                     with open(str(fb_id) + ".txt", "a") as f:
-                        f.write(v_name + "\n")
+                        f.write(name + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
                         f.write("adding_number")
                     phone_number_data = quick_reply_template_class(quick_reply_type.phone_number)
@@ -295,10 +295,10 @@ def hello_world():
 
                 if status == "adding_number":
                     number = a['entry'][0]['messaging'][0]['message']['text']
-                    v_number = validate_phone(fb_id, number)
+                    #number = validate_phone(fb_id, number)
 
                     with open(str(fb_id) + ".txt", "a") as f:
-                        f.write(v_number + "\n")
+                        f.write(number + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
                         f.write("getting email")
                     email_data = quick_reply_template_class(quick_reply_type.email)
@@ -307,9 +307,9 @@ def hello_world():
 
                 if status == "getting email":
                     email = a['entry'][0]['messaging'][0]['message']['text']
-                    v_email = validate_email(fb_id, email)
+                    #email = validate_email(fb_id, email)
                     with open(str(fb_id) + ".txt", "a") as f:
-                        f.write(v_email + "\n")
+                        f.write(email + "\n")
                     with open(str(fb_id) + "_status" + ".txt", "w") as f:
                         f.write("getting location")
                     location_data = quick_reply_template_class(quick_reply_type.location)
@@ -319,8 +319,8 @@ def hello_world():
                 if status == "getting location":
                     lat = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["lat"]
                     long = a['entry'][0]['messaging'][0]['message']["attachments"][0]["payload"]["coordinates"]["long"]
-                    v_lat, v_long = validate_location(fb_id, lat, long)
-                    location = str(v_lat) + ":" + str(v_long)
+                    #v_lat, v_long = validate_location(fb_id, lat, long)
+                    location = str(lat) + ":" + str(long)
 
                     with open(str(fb_id) + ".txt", "r") as f:
                         user_name = f.readline()
