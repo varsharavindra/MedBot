@@ -25,8 +25,8 @@ import datetime
 
 threshold = 0
 token = ""
-CLIENT_ACCESS_TOKEN = ''
-google_places_api_key=""
+CLIENT_ACCESS_TOKEN = 'EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu'
+google_places_api_key="ab47593acb7f45c68ca4ffe296db1885"
 session = dict()
 
 # base_url = "https://localhost:8000/"
@@ -37,7 +37,7 @@ user_url = static_url + "user.jpg"
 util
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = ""
+app.config['SECRET_KEY'] = "abcdefghijn"
 
 
 def get_location_url(lat, long):
@@ -52,8 +52,8 @@ def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
         now = datetime.datetime.now().time().minute
         print(now)
         limit = now + 1
-        while True:
-            if not (datetime.datetime.now().time().minute <= limit and fb_text["postback"]["payload"]== "YES"):
+        #while True:
+         #   if not (datetime.datetime.now().time().minute <= limit and fb_text["postback"]["payload"]== "YES"):
 
 
 
