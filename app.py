@@ -94,7 +94,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             potential_vendor_information[i].qty + "\nDistance in metre : " + potential_dist[i])
         btn = buttons("web_url", location, "go to location in maps")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
-                                                   buttons=[btn.__dict__]).__dict__)
+                                                   buttons=[btn.__dict__]))
     generic_data = generic_template_class(fb_id, elements)
 
 
@@ -108,7 +108,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             impotential_vendor_information[i].qty + "\nDistance in metre : " + impotential_dist[i])
         btn1 = buttons("web_url",location,"Go to location in maps")
         elements1.append(genereic_template_elements(user_name1,image_url=user_url, subtitle=subtitle1,
-                                                   buttons=[btn1.__dict__]).__dict__)
+                                                   buttons=[btn1.__dict__]))
     generic_data = generic_template_class(fb_id, elements)
 
     #if not potential_vendor_information and impotential_vendor_information:
@@ -132,7 +132,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         pharma_name = z
         btn1 = buttons("web_url", pharmacy_location, "go to location")
         elements.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
-                                                       buttons=[btn1.__dict__]).__dict__)
+                                                       buttons=[btn1.__dict__]))
     generic_data = generic_template_class(fb_id, elements)
     return generic_data
 
@@ -158,7 +158,7 @@ def reply_for_query(fb_id, fb_text):
         if intent == General_Talk:
             button1=buttons("postback",title="Need Medicine",payload="NEED")
             button2 = buttons("postback", title="Upload Medicine", payload="UPDATE")
-            data = button_template_class("How may I help you?", buttons=[button1.__dict__,button2.__dict__].__dict__)
+            data = button_template_class("How may I help you?", buttons=[button1.__dict__,button2.__dict__])
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
@@ -241,7 +241,7 @@ def reply_for_query(fb_id, fb_text):
         button1 = buttons("postback", title="YES", payload="YES")
         button2 = buttons("postback", title="NO", payload="NO")
         data = button_template_class("The quantity of "+medi_name+" has been successfully updated, want to"
-                                            "update more medicine?", buttons=[button1.__dict__, button2.__dict__].__dict__)
+                                            "update more medicine?", buttons=[button1.__dict__, button2.__dict__])
         create_context(fb_id,"more_updation",None)
 
 
