@@ -93,10 +93,10 @@ class message:
             setattr(self, key, value)
 
 class button_template_class(base_reply_template):
-    def __init__(self,title,buttons):
+    def __init__(self,fb_id,title,buttons):
         attachment = attachment_template("template", payload=payload_template("button",text=title,buttons=buttons).__dict__)
         msg = message(attachment=attachment.__dict__)
-
+        super(button_template_class, self).init("RESPONSE", fb_id=fb_id, message=msg.__dict__)
 
 class generic_template_class(base_reply_template):
     def __init__(self,fb_id,elements):
