@@ -18,16 +18,15 @@ import nlp
 import util
 import re
 import smtplib
-
 import gpxpy.geo
 from math import radians
 
 threshold = 0
 token = ""
-
 CLIENT_ACCESS_TOKEN = ''
 google_places_api_key=""
 session = dict()
+
 # base_url = "https://localhost:8000/"
 base_url="https://medecinebot.herokuapp.com/"
 static_url = base_url + "static/"
@@ -41,7 +40,6 @@ app.config['SECRET_KEY'] = ""
 
 def get_location_url(lat, long):
     return "https://www.google.com/maps/search/?api=1&query=" + str(lat) + "," + str(long)
-
 
 
 def query_medicine_response_builder(fb_id, brand, quantity):
@@ -65,7 +63,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         location = get_location_url(obj.lat, obj.long)
         user_name = potential_vendor_information[i].uname
         subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
-            potential_vendor_information[i].qty)
+            potential_vendor_information[i].qty + "\nDistance in metre : " + potential_dist[i])
         btn = buttons("web_url", location, "go to location in maps")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                    buttons=[btn.__dict__]).__dict__)
@@ -76,41 +74,40 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         location1 = get_location_url(obj.lat,obj.long)
         user_name1 = impotential_vendor_information[i].uname
         subtitle1 = "Phone: " + str(impotential_vendor_information[i].phone) + "\nQuantity: " + str(
-            impotential_vendor_information[i].qty)
+            impotential_vendor_information[i].qty + "\nDistance in metre : " + impotential_dist[i])
         btn1 = buttons("web_url",location,"Go to location in maps")
         elements1.append(genereic_template_elements(user_name1,image_url=user_url, subtitle=subtitle1,
                                                    buttons=[btn1.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
 
-    if not potential_vendor_information and impotential_vendor_information:
-        request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?\
-        location="+latitude+","+longitude+"&type=pharmacy&radius=1000&key="+google_places_api_key)
-        print(request_pharmacy.content)
-        pharmacy_data = request_pharmacy.json()
-        # print(pharmacy_data['results'][0]['geometry']['location']['lat'])
-        pharmacy_name = []
-        pharmacy_latitude = []
-        pharmacy_longitude = []
-        for p in pharmacy_data['results']:
-            pharmacy_latitude.append(p['geometry']['location']['lat'])
-            pharmacy_longitude.append(p['geometry']['location']['lng'])
-        print(pharmacy_latitude)
-        print(pharmacy_longitude)
-        print(pharmacy_name)
-        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
-            print(x,y,z)
-            pharmacy_location = get_location_url(x, y)
-            pharma_name = z
-            btn1 = buttons("web_url", pharmacy_location, "go to location")
-            elements.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
+    #if not potential_vendor_information and impotential_vendor_information:
+    request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?\
+    location="+latitude+","+longitude+"&type=pharmacy&radius=1000&key="+google_places_api_key)
+    print(request_pharmacy.content)
+    pharmacy_data = request_pharmacy.json()
+    # print(pharmacy_data['results'][0]['geometry']['location']['lat'])
+    pharmacy_name = []
+    pharmacy_latitude = []
+    pharmacy_longitude = []
+    for p in pharmacy_data['results']:
+        pharmacy_latitude.append(p['geometry']['location']['lat'])
+        pharmacy_longitude.append(p['geometry']['location']['lng'])
+    print(pharmacy_latitude)
+    print(pharmacy_longitude)
+    print(pharmacy_name)
+    for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
+        print(x,y,z)
+        pharmacy_location = get_location_url(x, y)
+        pharma_name = z
+        btn1 = buttons("web_url", pharmacy_location, "go to location")
+        elements.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
                                                        buttons=[btn1.__dict__]).__dict__)
-        generic_data = generic_template_class(fb_id, elements)
-
-
+    generic_data = generic_template_class(fb_id, elements)
     return generic_data
 
 
 def nearest_location(lat1, long1, lat2, long2):
+
     latitude1 = radians(float(lat1))
     longitude1 = radians(float(long1))
 
@@ -137,7 +134,7 @@ def reply_for_query(fb_id, fb_text):
             if not parameter.get("drug", None) is None:
                 drug = parameter["drug"]
                 # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
-                trade_name =search_trade_for_drug(fb_id, drug)
+                trade_name = search_trade_for_drug(fb_id, drug)
                 create_context(fb_id,"MISSING_QTY", (trade_name))
 
             else:
@@ -146,7 +143,6 @@ def reply_for_query(fb_id, fb_text):
 
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
-
                 generic_data = query_medicine_response_builder(fb_id, brand, quantity)
                 data = generic_data.__dict__
             else:
@@ -209,8 +205,9 @@ def reply_for_query(fb_id, fb_text):
         qty_of_med = fb_text["text"]
         #Todo: med_id is unique for every batch id?
         update_quantity(fb_id,medi_name, qty_of_med)
-        data = text_template(fb_id, "The quantity of "+medi_name+" has been successfully updated")
-
+        data = text_template(fb_id, "The quantity of "+medi_name+" has been successfully updated. Do you want to update"
+                                                                 "any other medicine's quantity?")
+        create_context(fb_id,"update_med",None)
     reply(data)
 
 
@@ -337,6 +334,7 @@ def validate_email(fb_id, email):
         else:
             break
     return email
+
 
 def validate_location(fb_id, lat, long):
     while True:

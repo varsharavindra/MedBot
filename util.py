@@ -7,6 +7,7 @@ contexts_path="contexts/"
 if not os.path.exists(contexts_path):
     os.makedirs(contexts_path)
 
+
 def create_context(fb_id,status,obj):
     if not os.path.exists(contexts_path):
         os.makedirs(contexts_path)
@@ -17,6 +18,7 @@ def create_context(fb_id,status,obj):
         with open(fb_id+".pickle","w") as f:
             pickle.dump(obj,f,pickle.HIGHEST_PROTOCOL)
 
+
 def get_context(fb_id):
     if fb_id in os.listdir(contexts_path):
        with open(fb_id+SUFFIX,"r") as f:
@@ -25,10 +27,12 @@ def get_context(fb_id):
     else:
         return None
 
+
 def get_context_data(fb_id):
     with open(fb_id + ".pickle", "w") as f:
         tuple=pickle.load(f)
     return tuple
+
 
 def remove_context(fb_id):
     if fb_id in os.listdir(contexts_path):

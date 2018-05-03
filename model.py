@@ -24,7 +24,7 @@ def search_user(fb_id):
     row = cursor.fetchone()
     db.close()
     print(row)
-    if row == None:
+    if row is None:
         return False
     else:
         return True
