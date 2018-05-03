@@ -376,8 +376,8 @@ def send_bill_information(cust_id,**kwargs):
         reply(data)
     else:
         # Todo:send mail to this new user
-        gmail_user = 'medbotizdr@gmail.com'
-        gmail_password = 'vvvvrvvvvr'
+        gmail_user = ''
+        gmail_password = ''
         #TODO: how to get email of this customer
         customer_email = mydict['email']
         sent_from = gmail_user
