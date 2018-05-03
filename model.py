@@ -10,10 +10,15 @@ import util
 
 app=Flask(__name__)
 
-app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'
-app.config['MYSQL_DATABASE_PASSWORD'] = '3c67c0ac'
-app.config['MYSQL_DATABASE_DB'] = 'heroku_f410f3c3cc58ba7'
-app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-05.cleardb.net'
+# app.config['MYSQL_DATABASE_USER'] = 'bf07afc4f7181d'
+# app.config['MYSQL_DATABASE_PASSWORD'] = '3c67c0ac'
+# app.config['MYSQL_DATABASE_DB'] = 'heroku_f410f3c3cc58ba7'
+# app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-05.cleardb.net'
+
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
+app.config['MYSQL_DATABASE_DB'] = 'medicine'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 
 def search_user(fb_id):

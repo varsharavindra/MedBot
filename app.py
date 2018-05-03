@@ -487,6 +487,6 @@ def send_bill_information(cust_id,**kwargs):
 
 
 if __name__ == '__main__':
-    send_bill_information(1835953359813263)
-    #app.run(port=8000, debug=True)
+    # send_bill_information(1835953359813263)
+    app.run(port=8000, debug=True)
 

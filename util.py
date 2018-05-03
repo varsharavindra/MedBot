@@ -1,40 +1,53 @@
 import os
 import pickle
-
-SUFFIX= "_context.txt"
-contexts_path="contexts/"
-
-if not os.path.exists(contexts_path):
-    os.makedirs(contexts_path)
+import model
 
 
 def create_context(fb_id,status,obj):
-    if not os.path.exists(contexts_path):
-        os.makedirs(contexts_path)
-    if fb_id in os.listdir(contexts_path):
-        os.remove(contexts_path+ fb_id + SUFFIX)
-        with open(contexts_path+fb_id + SUFFIX, "w") as f:
-            f.write(status)
-        with open(contexts_path+fb_id+".pickle","w") as f:
-            pickle.dump(obj,f,pickle.HIGHEST_PROTOCOL)
-
-
+    mysql = model.med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    data=obj
+    cursor.execute("""insert into context values('%s','%s','%s')""" % (fb_id,status,data))
+    db.commit()
+    db.close()
+    
 def get_context(fb_id):
-    print(os.listdir(contexts_path))
-    if fb_id in os.listdir(contexts_path):
-       with open(contexts_path+fb_id+SUFFIX,"r") as f:
-           data = f.readline()
-       return data
-    else:
-        return None
 
+    mysql = model.med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""select context from context where fb_id='%s'""" %(fb_id))
+    data=cursor.fetchone()
+    db.close()
+    if data is None:
+        return None
+    return data[0]
 
 def get_context_data(fb_id):
-    with open(contexts_path+fb_id + ".pickle", "w") as f:
-        tuple=pickle.load(f)
-    return tuple
+    mysql = model.med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""select data from context where fb_id='%s'""" % (fb_id))
+    data = cursor.fetchone()
+    db.close()
+
+    if data[0] == "None":
+        return None
+    else:
+        return data[0]
 
 
 def remove_context(fb_id):
-    if fb_id in os.listdir(contexts_path):
-        os.remove(contexts_path+ fb_id + SUFFIX)
+    mysql = model.med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""delete  from context where fb_id='%s'""" % (fb_id))
+    db.commit()
+    db.close()
+
+
+if __name__ == '__main__':
+    # create_context("dsds","set_state",None)
+    print(get_context("dsds"))
+    # remove_context("dsds")
