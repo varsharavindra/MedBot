@@ -158,7 +158,7 @@ def reply_for_query(fb_id, fb_text):
         if intent == General_Talk:
             button1=buttons("postback",title="Need Medicine",payload="NEED")
             button2 = buttons("postback", title="Upload Medicine", payload="UPDATE")
-            data = button_template_class("How may I help you?", buttons=[button1.__dict__,button2.__dict__])
+            data = button_template_class("How may I help you?", buttons=[button1.__dict__,button2.__dict__]).__dict__
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
