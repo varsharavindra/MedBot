@@ -31,8 +31,8 @@ def apiai_query(msg):
     data = response.read()
 
     data1 = json.loads(data)
-    print()
-    if data1["result"]["source"] == "domains":
+    print(data1)
+    if data1["result"]["source"] == "agent":
         return General_Talk,data1["result"]["fulfillment"]["speech"],
     else:
         if data1["result"]["metadata"]["intentName"] == Query_medicine:
