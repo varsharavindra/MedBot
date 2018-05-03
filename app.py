@@ -9,6 +9,7 @@ from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
 from uitemplates import genereic_template_elements, buttons,button_template_class,subscription
 from util import *
 import threading
+from threading import Thread
 import json
 import requests
 import os.path
@@ -20,6 +21,7 @@ import re
 import smtplib
 import gpxpy.geo
 from math import radians
+import datetime
 
 threshold = 0
 token = ""
@@ -40,6 +42,31 @@ app.config['SECRET_KEY'] = ""
 
 def get_location_url(lat, long):
     return "https://www.google.com/maps/search/?api=1&query=" + str(lat) + "," + str(long)
+
+def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
+    for i in potential_dist:
+        button1 = buttons("postback", title="Yes, proceed", payload="YES")
+        button2 = buttons("postback", title="No, I'm not available", payload="NO")
+        data = button_template_class("A request for " + brand + " has been made, would you like to share medicine?",
+                                     buttons=[button1, button2])
+        now = datetime.datetime.now().time().minute
+        print(now)
+        limit = now + 1
+        while True:
+            if not (datetime.datetime.now().time().minute <= limit and fb_text["postback"]["payload"]== "YES"):
+
+
+        print("Time is up!")
+
+    now = datetime.datetime.now().time().minute
+    print(now)
+    limit = now + 1
+    while True:
+        if datetime.datetime.now().time().minute == limit:
+            break
+
+    print("Time is up!")
+
 
 
 def query_medicine_response_builder(fb_id, brand, quantity):
@@ -68,6 +95,9 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                    buttons=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
+
+
+
 
     elements1 = []
     for i in impotential_dist:
@@ -179,7 +209,7 @@ def reply_for_query(fb_id, fb_text):
     elif util.get_context(fb_id) == "update_med":
             util.remove_context(fb_id)
             med_name = fb_text['text']
-            data = text_template(fb_id,"How much quantity reduced?")
+            data = text_template(fb_id,"How much quantity of "+med_name+" is left?")
             #Todo: Mention previous quantity
             create_context(fb_id, "reduce_qty", (med_name))
 
@@ -204,10 +234,22 @@ def reply_for_query(fb_id, fb_text):
         util.remove_context(fb_id)
         qty_of_med = fb_text["text"]
         #Todo: med_id is unique for every batch id?
-        update_quantity(fb_id,medi_name, qty_of_med)
-        data = text_template(fb_id, "The quantity of "+medi_name+" has been successfully updated. Do you want to update"
-                                                                 "any other medicine's quantity?")
-        create_context(fb_id,"update_med",None)
+        update_quantity(fb_id, medi_name, qty_of_med)
+        data = text_template(fb_id, )
+        button1 = buttons("postback", title="YES", payload="YES")
+        button2 = buttons("postback", title="NO", payload="NO")
+        data = button_template_class("The quantity of "+medi_name+" has been successfully updated, want to"
+                                            "update more medicine?", buttons=[button1, button2])
+        create_context(fb_id,"more_updation",None)
+
+
+    elif util.get_context(fb_id) == "more_updation":
+        util.remove_context(fb_id)
+        if fb_text["postback"]["payload"]=="YES":
+            data = text_template(fb_id, "Which medicine do you want to update?")
+            create_context(fb_id, "reduce_qty", None)
+        else:
+            data = text_template(fb_id, "Thank you for updating!")
     reply(data)
 
 

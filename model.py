@@ -10,10 +10,10 @@ import util
 
 app=Flask(__name__)
 
-app.config['MYSQL_DATABASE_USER'] = ''
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = ''
-app.config['MYSQL_DATABASE_HOST'] = ''
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'nrukesari'
+app.config['MYSQL_DATABASE_DB'] = 'medicine'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 
 def search_user(fb_id):
@@ -248,9 +248,9 @@ if __name__ == '__main__':
     #     insert_query_med_det("100","abc","zts","xyz")
     #   insert_query_users('vivek', '37.483872693672,-122.14900441942', '7406160779', 'v@gmail.com', '11')
     #   x=search_user(100)
-    # search_user_for_med("100","10","crocin")
+     search_user_for_med("100","7","crocin")
     # get_med_data("c300","200")
     # get_drug_trade("200")
     # get_email("9986427925")
     # get_med_for_user("100")
-    update_quantity("100","crocin",7)
+    #update_quantity("100","crocin",7)
