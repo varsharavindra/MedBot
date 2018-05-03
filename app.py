@@ -153,7 +153,7 @@ def reply_for_query(fb_id, fb_text):
     distance = []
     if util.get_context(fb_id) is None:
         text = fb_text["text"]
-        intent, parameter = apiai_query(fb_text)
+        intent, parameter = apiai_query(fb_text["text"])
 
         if intent == General_Talk:
             button1=buttons("postback",title="Need Medicine",payload="NEED")
