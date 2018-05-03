@@ -48,7 +48,7 @@ def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
         button1 = buttons("postback", title="Yes, proceed", payload="YES")
         button2 = buttons("postback", title="No, I'm not available", payload="NO")
         data = button_template_class("A request for " + brand + " has been made, would you like to share medicine?",
-                                     buttons=[button1, button2])
+                                     buttons=[button1.__dict__, button2.__dict__].__dict__)
         now = datetime.datetime.now().time().minute
         print(now)
         limit = now + 1
@@ -158,7 +158,7 @@ def reply_for_query(fb_id, fb_text):
         if intent == General_Talk:
             button1=buttons("postback",title="Need Medicine",payload="NEED")
             button2 = buttons("postback", title="Upload Medicine", payload="UPDATE")
-            data = button_template_class("How may I help you?", buttons=[button1,button2])
+            data = button_template_class("How may I help you?", buttons=[button1.__dict__,button2.__dict__].__dict__)
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
@@ -241,7 +241,7 @@ def reply_for_query(fb_id, fb_text):
         button1 = buttons("postback", title="YES", payload="YES")
         button2 = buttons("postback", title="NO", payload="NO")
         data = button_template_class("The quantity of "+medi_name+" has been successfully updated, want to"
-                                            "update more medicine?", buttons=[button1, button2])
+                                            "update more medicine?", buttons=[button1.__dict__, button2.__dict__].__dict__)
         create_context(fb_id,"more_updation",None)
 
 
