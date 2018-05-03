@@ -56,6 +56,7 @@ def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
             if not (datetime.datetime.now().time().minute <= limit and fb_text["postback"]["payload"]== "YES"):
 
 
+
         print("Time is up!")
 
     now = datetime.datetime.now().time().minute
@@ -226,7 +227,7 @@ def reply_for_query(fb_id, fb_text):
     elif util.get_context(fb_id) == "reduce_qty":
         util.remove_context(fb_id)
         name_of_med = fb_text['text']
-        data = text_template(fb_id, "What quantity of this medicine is left?")
+        data = text_template(fb_id, "What quantity of "+name_of_med+" medicine is left?")
         create_context(fb_id, "upload_qty", (name_of_med))
 
     elif util.get_context(fb_id) == "upload_qty":
