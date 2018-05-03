@@ -152,8 +152,8 @@ def nearest_location(lat1, long1, lat2, long2):
 def reply_for_query(fb_id, fb_text):
     distance = []
     if util.get_context(fb_id) is None:
-        text = fb_text["text"]
-        intent, parameter = apiai_query(fb_text["text"])
+        text = fb_text['message']["text"]
+        intent, parameter = apiai_query(text)
 
         if intent == General_Talk:
             button1=buttons("postback",title="Need Medicine",payload="NEED")
@@ -206,13 +206,13 @@ def reply_for_query(fb_id, fb_text):
 
     elif util.get_context(fb_id) == "need_med":
             util.remove_context(fb_id)
-            med_name = fb_text['text']
+            med_name = fb_text['message']['text']
             data = text_template(fb_id, "How much quantity?")
             create_context(fb_id, "MISSING_QTY", (med_name))
 
     elif util.get_context(fb_id) == "update_med":
             util.remove_context(fb_id)
-            med_name = fb_text['text']
+            med_name = fb_text['message']['text']
             data = text_template(fb_id,"How much quantity of "+med_name+" is left?")
             #Todo: Mention previous quantity
             create_context(fb_id, "reduce_qty", (med_name))
@@ -222,21 +222,21 @@ def reply_for_query(fb_id, fb_text):
     elif util.get_context(fb_id) == "MISSING_QTY":
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
-        quantity = fb_text["text"]
+        quantity = fb_text['message']["text"]
         generic_data = query_medicine_response_builder(fb_id, brand, quantity)
         data = generic_data.__dict__
 
 
     elif util.get_context(fb_id) == "reduce_qty":
         util.remove_context(fb_id)
-        name_of_med = fb_text['text']
+        name_of_med = fb_text['message']['text']
         data = text_template(fb_id, "What quantity of "+name_of_med+" medicine is left?")
         create_context(fb_id, "upload_qty", (name_of_med))
 
     elif util.get_context(fb_id) == "upload_qty":
         medi_name = util.get_context_data(fb_id)
         util.remove_context(fb_id)
-        qty_of_med = fb_text["text"]
+        qty_of_med = fb_text['message']["text"]
         #Todo: med_id is unique for every batch id?
         update_quantity(fb_id, medi_name, qty_of_med)
         data = text_template(fb_id, )
@@ -347,7 +347,7 @@ def hello_world():
 
             thread1 = threading.Thread(target=reply, args=(data,))
         else:
-            fb_text = a['entry'][0]['messaging'][0]['message']
+            fb_text = a['entry'][0]['messaging'][0]
             thread1 = threading.Thread(target=reply_for_query, args=(fb_id, fb_text,))
 
         print("Starting thread")
