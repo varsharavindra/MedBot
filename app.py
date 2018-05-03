@@ -169,6 +169,7 @@ def reply_for_query(fb_id, fb_text):
                 create_context(fb_id,"MISSING_QTY", (trade_name))
 
             else:
+                #Todo : brand not present in json
                 brand = parameter["brand"]
                 create_context(fb_id, "MISSING_QTY", (brand))
 

@@ -31,11 +31,12 @@ def apiai_query(msg):
     data = response.read()
 
     data1 = json.loads(data)
+    print()
     if data1["result"]["source"] == "domains":
         return General_Talk,data1["result"]["fulfillment"]["speech"],
     else:
         if data1["result"]["metadata"]["intentName"] == Query_medicine:
-            return Query_medicine, data1["result"]["parameters"]
+            return Query_medicine, data1["result"]["parameters"],
         else:
             if data1["result"]["metadata"] == Upload_medicine:
                 return Upload_medicine, "None"
@@ -44,5 +45,5 @@ def apiai_query(msg):
 #json.loads(var1)
 
 if __name__ == '__main__':
-    msg=apiai("How to update my crocin tablets?")
+    msg=apiai_query("hey i want 5 crocin")
     print (msg)
