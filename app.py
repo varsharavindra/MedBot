@@ -73,6 +73,8 @@ def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
 def query_medicine_response_builder(fb_id, brand, quantity):
     potential_distance = []
     impotential_distance = []
+    elements = []
+    elements1 = []
     potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
                                                                                        brand)
     potential_dist = sorted(range(len(potential_distance)), key=lambda k: potential_distance[k])
@@ -89,7 +91,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             impotential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
 
 
-        elements = []
+
     for i in potential_dist:
         location = get_location_url(obj.lat, obj.long)
         user_name = potential_vendor_information[i].uname
@@ -103,7 +105,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
 
 
 
-    elements1 = []
+
     for i in impotential_dist:
         location1 = get_location_url(obj.lat,obj.long)
         user_name1 = impotential_vendor_information[i].uname
