@@ -424,7 +424,7 @@ def get_shop_name(xyz):
     return "Banagiri Medicals"
 
 def send_bill_information(cust_id,**kwargs):
-    mydict={'username': 'ravindra', 'phone': '8147383283', 'email': 'varsharavindra27@yahoo.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
+    mydict={'username': 'ravindra', 'phone': '7406160779', 'email': 'varsharavindra27@yahoo.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
 
     phone_number = mydict['phone']
     shop_name=get_shop_name(cust_id)
