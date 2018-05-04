@@ -98,7 +98,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         location = get_location_url(obj.lat, obj.long)
         user_name = potential_vendor_information[i].uname
         subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
-            potential_vendor_information[i].qty + "\nDistance in metre : " + potential_dist[i])
+            potential_vendor_information[i].qty)
         btn = buttons("web_url", location, "go to location in maps")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                    buttons=[btn.__dict__]))
@@ -112,8 +112,8 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         location1 = get_location_url(obj.lat,obj.long)
         user_name1 = impotential_vendor_information[i].uname
         subtitle1 = "Phone: " + str(impotential_vendor_information[i].phone) + "\nQuantity: " + str(
-            impotential_vendor_information[i].qty + "\nDistance in metre : " + impotential_dist[i])
-        btn1 = buttons("web_url",location,"Go to location in maps")
+            impotential_vendor_information[i].qty)
+        btn1 = buttons("web_url",location1,"Go to location in maps")
         elements1.append(genereic_template_elements(user_name1,image_url=user_url, subtitle=subtitle1,
                                                    buttons=[btn1.__dict__]))
     #generic_data = generic_template_class(fb_id, elements1)
