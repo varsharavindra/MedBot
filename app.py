@@ -259,6 +259,7 @@ def reply_for_query(fb_id, fb_text):
             create_context(fb_id, "reduce_qty", None)
         else:
             data = text_template(fb_id, "Thank you for updating!")
+
     reply(data)
 
 
