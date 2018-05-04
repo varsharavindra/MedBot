@@ -200,20 +200,17 @@ def reply_for_query(fb_id, fb_text):
                 drug = parameter["drug"]
                 # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
                 trade_name = search_trade_for_drug(fb_id, drug)
-                create_context(fb_id,"MISSING_QTY", (trade_name))
-
             else:
                 #Todo : brand not present in json
-                brand = parameter["brand"]
-                create_context(fb_id, "MISSING_QTY", (brand))
+                trade_name = parameter["brand"]
 
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
-                generic_data = query_medicine_response_builder(fb_id, brand, quantity)
+                generic_data = query_medicine_response_builder(fb_id, trade_name, quantity)
                 data = generic_data.__dict__
             else:
                 # TODO Handle case when user texts only with medicine name
-                util.create_context(fb_id, "MISSING_QTY", (brand))
+                util.create_context(fb_id, "MISSING_QTY", (trade_name))
                 data = text_template(fb_id, "How much quantity do you need?")
         else:
             #TODO:handle case for update medicine
@@ -426,7 +423,7 @@ def get_shop_name(xyz):
     return "pass"
 
 def send_bill_information(cust_id,**kwargs):
-    mydict={'username': 'vivek', 'phone': '8088432316', 'email': 'vivekstarstar', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
+    mydict={'username': 'varsha', 'phone': '7406160779', 'email': 'varsharavindra27@gmail.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
 
     phone_number = mydict['phone']
     shop_name=get_shop_name(cust_id)
@@ -454,8 +451,8 @@ def send_bill_information(cust_id,**kwargs):
         reply(data)
     else:
         # Todo:send mail to this new user
-        gmail_user = ''
-        gmail_password = ''
+        gmail_user = 'medbotizdr@gmail.com'
+        gmail_password = 'vvvvrvvvvr'
         #TODO: how to get email of this customer
         customer_email = mydict['email']
         sent_from = gmail_user
@@ -519,6 +516,6 @@ def send_bill_information(cust_id,**kwargs):
 
 
 if __name__ == '__main__':
-    # send_bill_information(1835953359813263)
-    app.run(port=8000, debug=True)
+    send_bill_information(1824444647629972)
+    #app.run(port=8000, debug=True)
 
