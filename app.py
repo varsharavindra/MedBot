@@ -156,10 +156,11 @@ def nearest_location(lat1, long1, lat2, long2):
 
 
 def reply_for_query(fb_id, fb_text):
-    data = text_template(fb_id, "Thank you for updating!")
+    data = text_template(fb_id, "i didnt understand!")
     print(data)
-    print(util.get_context(fb_id))
-    if util.get_context(fb_id) is None:
+    context=util.get_context(fb_id)
+    print(context)
+    if context is None:
         text = fb_text['message']["text"]
         intent, parameter = apiai_query(text)
 
@@ -202,7 +203,7 @@ def reply_for_query(fb_id, fb_text):
             create_context(fb_id,"reduce_qty",None)
 
 
-    elif util.get_context(fb_id) =="intent_type":
+    elif context =="intent_type":
         util.remove_context(fb_id)
         if fb_text["postback"]["payload"]=="NEED":
             data = text_template(fb_id,"Which medicine do you need?")
@@ -212,13 +213,13 @@ def reply_for_query(fb_id, fb_text):
             data = text_template(fb_id,"Which medicine do you want to update?")
             create_context(fb_id, "update_med", None)
 
-    elif util.get_context(fb_id) == "need_med":
+    elif context == "need_med":
             util.remove_context(fb_id)
             med_name = fb_text['message']['text']
             data = text_template(fb_id, "How much quantity?")
             create_context(fb_id, "MISSING_QTY", (med_name))
 
-    elif util.get_context(fb_id) == "update_med":
+    elif context == "update_med":
             util.remove_context(fb_id)
             med_name = fb_text['message']['text']
             data = text_template(fb_id,"How much quantity of "+med_name+" is left?")
@@ -227,7 +228,7 @@ def reply_for_query(fb_id, fb_text):
 
 
 
-    elif util.get_context(fb_id) == "MISSING_QTY":
+    elif context == "MISSING_QTY":
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
         quantity = fb_text['message']['text']
@@ -235,13 +236,13 @@ def reply_for_query(fb_id, fb_text):
         data = generic_data.__dict__
 
 
-    elif util.get_context(fb_id) == "reduce_qty":
+    elif context == "reduce_qty":
         util.remove_context(fb_id)
         name_of_med = fb_text['message']['text']
         data = text_template(fb_id, "What quantity of "+name_of_med+" medicine is left?")
         create_context(fb_id, "upload_qty", (name_of_med))
 
-    elif util.get_context(fb_id) == "upload_qty":
+    elif context == "upload_qty":
         medi_name = util.get_context_data(fb_id)
         util.remove_context(fb_id)
         qty_of_med = fb_text['message']["text"]
@@ -254,7 +255,7 @@ def reply_for_query(fb_id, fb_text):
         create_context(fb_id,"more_updation",None)
 
 
-    elif util.get_context(fb_id) == "more_updation":
+    elif context == "more_updation":
         util.remove_context(fb_id)
         if fb_text["postback"]["payload"]=="YES":
             data = text_template(fb_id, "Which medicine do you want to update?")
