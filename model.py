@@ -177,7 +177,7 @@ def search_trade_for_drug(fb_id, drug):
     mysql = med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute(""" select trade_name from med_det where drugname= "%s" and med_id in(select
+    cursor.execute(""" select trade_name from med_det where drug_name= "%s" and med_id in(select
                 med_id from med_acc where cust_id="%s")"""%(drug,fb_id))
     row=cursor.fetchone()
     db.close()
