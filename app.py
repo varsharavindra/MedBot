@@ -424,7 +424,7 @@ def get_shop_name(xyz):
     return "Banagiri Medicals"
 
 def send_bill_information(cust_id,**kwargs):
-    mydict={'username': 'ravindra', 'phone': '8147383283', 'email': 'varsharavindra27@gmail.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
+    mydict={'username': 'ravindra', 'phone': '8147383283', 'email': 'varsharavindra27@yahoo.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
 
     phone_number = mydict['phone']
     shop_name=get_shop_name(cust_id)
@@ -456,8 +456,8 @@ def send_bill_information(cust_id,**kwargs):
         gmail_user = 'medbotizdr@gmail.com'
         gmail_password = 'vvvvrvvvvr'
         #TODO: how to get email of this customer
-        #customer_email = mydict['email']
-        customer_email = 'varsharavindra27@yahoo.com'
+        customer_email = mydict['email']
+        #customer_email = 'varsharavindra27@yahoo.com'
         sent_from = gmail_user
         to = [customer_email]
         subject = 'Medicine Bot to share medicines!'
