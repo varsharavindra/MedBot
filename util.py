@@ -32,7 +32,7 @@ def get_context_data(fb_id):
     data = cursor.fetchone()
     db.close()
 
-    if data[0] == None:
+    if data == None:
         return None
     else:
         return data[0]
