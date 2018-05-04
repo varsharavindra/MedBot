@@ -245,7 +245,6 @@ def reply_for_query(fb_id, fb_text):
         qty_of_med = fb_text['message']["text"]
         #Todo: med_id is unique for every batch id?
         update_quantity(fb_id, medi_name, qty_of_med)
-        data = text_template(fb_id, )
         button1 = buttons("postback", title="YES", payload="YES")
         button2 = buttons("postback", title="NO", payload="NO")
         data = button_template_class(fb_id, "The quantity of "+medi_name+" has been successfully updated, want to"
