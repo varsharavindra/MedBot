@@ -75,6 +75,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
     impotential_distance = []
     elements = []
     elements1 = []
+    elements2 = []
     potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
                                                                                        brand)
     potential_dist = sorted(range(len(potential_distance)), key=lambda k: potential_distance[k])
@@ -114,10 +115,10 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         btn1 = buttons("web_url",location,"Go to location in maps")
         elements1.append(genereic_template_elements(user_name1,image_url=user_url, subtitle=subtitle1,
                                                    buttons=[btn1.__dict__]))
-    generic_data = generic_template_class(fb_id, elements)
+    #generic_data = generic_template_class(fb_id, elements1)
 
     #if not potential_vendor_information and impotential_vendor_information:
-    request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=1000&key="+google_places_api_key)
+    request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=500&key="+google_places_api_key)
     print(request_pharmacy.content)
     pharmacy_data = request_pharmacy.json()
     print(pharmacy_data['results'][0]['geometry']['location']['lat'])
@@ -135,9 +136,9 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         pharmacy_location = get_location_url(x, y)
         pharma_name = z
         btn1 = buttons("web_url", pharmacy_location, "go to location")
-        elements.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
+        elements2.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
                                                        buttons=[btn1.__dict__]))
-    generic_data = generic_template_class(fb_id, elements)
+    #generic_data = generic_template_class(fb_id, elements2)
     return generic_data
 
 
