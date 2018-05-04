@@ -10,7 +10,7 @@ def create_context(fb_id,status,obj):
     data=obj
     status=cursor.execute("""insert into context values('%s','%s','%s')""" % (fb_id,status,data))
     db.commit()
-    print("status contex created"+str(status))
+    print("status context created"+str(status))
     db.close()
     
 def get_context(fb_id):

@@ -169,7 +169,7 @@ def search_by_phone(phone_number):
     if row is not None:
         return row[0]
     else:
-        return False
+        return "new_user"
 
 
 

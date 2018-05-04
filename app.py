@@ -421,10 +421,10 @@ def validate_location(fb_id, lat, long):
     return lat, long
 
 def get_shop_name(xyz):
-    return "pass"
+    return "Banagiri Medicals"
 
 def send_bill_information(cust_id,**kwargs):
-    mydict={'username': 'varsha', 'phone': '7406160779', 'email': 'varsharavindra27@gmail.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
+    mydict={'username': 'ravindra', 'phone': '8147383283', 'email': 'varsharavindra27@gmail.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
 
     phone_number = mydict['phone']
     shop_name=get_shop_name(cust_id)
@@ -446,26 +446,29 @@ def send_bill_information(cust_id,**kwargs):
         text+=temp
     text+="total cost:"+str(total_cost)+"\n"
     print(text)
-    if not recipient_id is None:
+    if not recipient_id == "new_user":
         data = text_template_class(recipient_id,text,subscription_message=True).__dict__
         print(data)
         reply(data)
     else:
         # Todo:send mail to this new user
+        print("recipient id is none")
         gmail_user = 'medbotizdr@gmail.com'
         gmail_password = 'vvvvrvvvvr'
         #TODO: how to get email of this customer
-        customer_email = mydict['email']
+        #customer_email = mydict['email']
+        customer_email = 'varsharavindra27@yahoo.com'
         sent_from = gmail_user
         to = [customer_email]
         subject = 'Medicine Bot to share medicines!'
-        body = "Dear Customer,\nIf you would like to share the extra medicines bought by you now, kindly like our" \
-               "facebook page, In Zone drug remedy\n" \
-               "Thanks!"
+        body = "Dear Customer,\n\tThere is a good chance that you might not use all the medicines you just bought." \
+               "If you would like to share the extra medicines bought by you now, kindly like our facebook page," \
+               "'In Zone drug remedy' and rejoice the exchange of medicine through a simple and convinient bot on messenger." \
+               "Please do like and share! Regards!"
 
         email_text = """\  
         %s
-        """ % (sent_from, ", ".join(to), subject, body)
+        """ % (body)
         message = 'Subject: {}\n\n{}'.format(subject, email_text)
 
         try:
@@ -517,6 +520,6 @@ def send_bill_information(cust_id,**kwargs):
 
 
 if __name__ == '__main__':
-    #send_bill_information(1824444647629972)
-    app.run(port=8000, debug=True)
+    send_bill_information(1824444647629972)
+    #app.run(port=8000, debug=True)
 
