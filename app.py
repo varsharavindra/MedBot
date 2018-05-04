@@ -78,18 +78,19 @@ def query_medicine_response_builder(fb_id, brand, quantity):
     elements2 = []
     potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
                                                                                        brand)
-    potential_dist = sorted(range(len(potential_distance)), key=lambda k: potential_distance[k])
-    impotential_dist = sorted(range(len(impotential_distance)), key=lambda k: impotential_distance[k])
+
+
     current_user_location = current_user(fb_id)
     latitude, longitude = current_user_location.split(":")
     if len(potential_vendor_information) > threshold:
         for obj in potential_vendor_information:
             potential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
-
+        potential_dist = sorted(range(len(potential_distance)), key=lambda k: potential_distance[k])
     if len(impotential_vendor_information) > threshold:
 
         for obj in impotential_vendor_information:
             impotential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
+        impotential_dist = sorted(range(len(impotential_distance)), key=lambda k: impotential_distance[k])
 
 
 
