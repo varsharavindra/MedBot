@@ -117,7 +117,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
     generic_data = generic_template_class(fb_id, elements)
 
     #if not potential_vendor_information and impotential_vendor_information:
-    request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+float(latitude)+","+float(longitude)+"&type=pharmacy&radius=1000&key="+google_places_api_key)
+    request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=1000&key="+google_places_api_key)
     print(request_pharmacy.content)
     pharmacy_data = request_pharmacy.json()
     print(pharmacy_data['results'][0]['geometry']['location']['lat'])
