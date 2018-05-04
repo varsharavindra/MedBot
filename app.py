@@ -228,7 +228,7 @@ def reply_for_query(fb_id, fb_text):
         util.remove_context(fb_id)
         if fb_text["postback"]["payload"]=="NEED":
             data = text_template(fb_id,"Which medicine do you need?")
-
+            reply(data)
             create_context(fb_id, "need_med", None)
         elif fb_text["postback"]["payload"]=="UPDATE":
             data = text_template(fb_id,"Which medicine do you want to update?")
