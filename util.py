@@ -43,7 +43,7 @@ def remove_context(fb_id):
     mysql = model.med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""delete  from context where fb_id='%s'""" % (fb_id))
+    cursor.execute("""delete from context where fb_id='%s'""" % (fb_id))
     db.commit()
     db.close()
 
