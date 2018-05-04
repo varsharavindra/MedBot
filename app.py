@@ -179,7 +179,7 @@ def nearest_location(lat1, long1, lat2, long2):
 
 
 def reply_for_query(fb_id, fb_text):
-    #data = text_template(fb_id, "i didnt understand!")
+    data = text_template(fb_id, "i didnt understand!")
     #print(data)
     context=util.get_context(fb_id)
     print(context)
@@ -196,6 +196,7 @@ def reply_for_query(fb_id, fb_text):
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
+
             if not parameter.get("drug", None) is None:
                 drug = parameter["drug"]
                 # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
@@ -516,6 +517,6 @@ def send_bill_information(cust_id,**kwargs):
 
 
 if __name__ == '__main__':
-    send_bill_information(1824444647629972)
-    #app.run(port=8000, debug=True)
+    #send_bill_information(1824444647629972)
+    app.run(port=8000, debug=True)
 
