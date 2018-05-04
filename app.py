@@ -156,7 +156,7 @@ def nearest_location(lat1, long1, lat2, long2):
 
 
 def reply_for_query(fb_id, fb_text):
-    distance = []
+
     if util.get_context(fb_id) is None:
         text = fb_text['message']["text"]
         intent, parameter = apiai_query(text)

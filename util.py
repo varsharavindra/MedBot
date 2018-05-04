@@ -8,8 +8,9 @@ def create_context(fb_id,status,obj):
     db = mysql.connect()
     cursor = db.cursor()
     data=obj
-    cursor.execute("""insert into context values('%s','%s','%s')""" % (fb_id,status,data))
+    status=cursor.execute("""insert into context values('%s','%s','%s')""" % (fb_id,status,data))
     db.commit()
+    print("status contex created"+status)
     db.close()
     
 def get_context(fb_id):
