@@ -197,7 +197,7 @@ def reply_for_query(fb_id, fb_text):
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
 
-            if not parameter.get("drug", None) is None:
+            if not parameter.get("drug") is '':
                 drug = parameter["drug"]
                 # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
                 trade_name = search_trade_for_drug(fb_id, drug)
