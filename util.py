@@ -18,7 +18,7 @@ def create_context(fb_id,status,obj):
     if row is None:
         status=cursor.execute("""insert into context values('%s','%s','%s')""" % (fb_id,status,data))
     else:
-        status = cursor.execute("""update context set context='%s' where fb_id='%s'"""%(status,fb_id))
+        status = cursor.execute("""update context set context='%s' and data='%s' where fb_id='%s'"""%(status,data,fb_id))
     db.commit()
     logger.info("status context created " + str(status))
     db.close()

@@ -78,6 +78,8 @@ def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
 
 def query_medicine_response_builder(fb_id, brand, quantity):
     distance = []
+
+    logging.info("finding users for brand:"+brand)
     potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
                                                                                        brand)
     current_user_location = current_user(fb_id)
