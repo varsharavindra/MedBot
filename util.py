@@ -13,12 +13,13 @@ def create_context(fb_id,status,obj):
     db = mysql.connect()
     cursor = db.cursor()
     data=obj
-    cursor.execute("SELECT context from context where fb_id='%s'"%(fb_id))
+    cursor.execute("SELECT status from contexts where fb_id='%s'"%(fb_id))
     row = cursor.fetchone()
     if row is None:
-        status=cursor.execute("""insert into context values('%s','%s','%s')""" % (fb_id,status,data))
+        status=cursor.execute("""insert into contexts values('%s','%s','%s')""" % (fb_id,status,data))
     else:
-        status = cursor.execute("""update context set context='%s' and data='%s' where fb_id='%s'"""%(status,str(data),fb_id))
+        logger.log("""update contexts as c set c.status='%s' and data='%s' where fb_id='%s'"""%(status,str(data),fb_id))
+        status = cursor.execute("""update contexts set c.status='%s' and data='%s' where fb_id='%s'"""%(status,str(data),fb_id))
     db.commit()
     logger.info("status context created " + str(status))
     db.close()
@@ -28,7 +29,7 @@ def get_context(fb_id):
     mysql = model.med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""select context from context where fb_id='%s'""" %(fb_id))
+    cursor.execute("""select status from contexts where fb_id='%s'""" %(fb_id))
     data=cursor.fetchone()
     db.close()
 
@@ -43,7 +44,7 @@ def get_context_data(fb_id):
     mysql = model.med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""select data from context where fb_id='%s'""" % (fb_id))
+    cursor.execute("""select data from contexts where fb_id='%s'""" % (fb_id))
     data = cursor.fetchone()
     db.close()
     logger.info("data " + str(data))
@@ -57,7 +58,7 @@ def remove_context(fb_id):
     mysql = model.med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""update context set context="None" where fb_id='%s'""" % (fb_id))
+    cursor.execute("""update contexts set status="None" where fb_id='%s'""" % (fb_id))
     db.commit()
     db.close()
 
