@@ -26,11 +26,12 @@ def get_context(fb_id):
     cursor.execute("""select context from context where fb_id='%s'""" %(fb_id))
     data=cursor.fetchone()
     db.close()
-    print(data[0])
+
     if data is None:
         return None
     elif data[0] == "None":
         return None
+    print(data[0])
     return data[0]
 
 def get_context_data(fb_id):
