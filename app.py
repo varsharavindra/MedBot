@@ -204,6 +204,7 @@ def reply_for_query(fb_id, fb_text):
             logger.info("Printing data")
             print(data)
             create_context(fb_id,"intent_type",None)
+            logger.info("create context for intent type")
         #     TODO:set the context to need or update medicine
         elif intent == Query_medicine:
 
