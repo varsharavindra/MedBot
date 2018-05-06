@@ -23,7 +23,7 @@ def get_context(fb_id):
     db.close()
     if data is None:
         return None
-    return data
+    return data[0]
 
 def get_context_data(fb_id):
     mysql = model.med()
