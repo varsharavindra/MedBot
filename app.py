@@ -91,7 +91,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             potential_vendor_information[i].qty)
         btn = buttons("web_url",url=location,title="got to location")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
-                                                   button=[btn.__dict__]).__dict__)
+                                                   buttons=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
     return generic_data
     # potential_distance = []
