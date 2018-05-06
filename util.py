@@ -29,6 +29,8 @@ def get_context(fb_id):
     print(data[0])
     if data is None:
         return None
+    elif data[0] == "None":
+        return None
     return data[0]
 
 def get_context_data(fb_id):

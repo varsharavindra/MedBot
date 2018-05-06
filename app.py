@@ -182,7 +182,7 @@ def reply_for_query(fb_id, fb_text):
     #data = text_template(fb_id, "i didnt understand!")
     #print(data)
     context=util.get_context(fb_id)
-    print(context)
+    print("curren context:",context)
     if context is None:
         text = fb_text['message']["text"]
         intent, parameter = apiai_query(text)
