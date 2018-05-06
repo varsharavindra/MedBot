@@ -22,6 +22,12 @@ import smtplib
 import gpxpy.geo
 from math import radians
 import datetime
+import logging
+
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%d-%m-%Y:%H:%M:%S',
+    level=logging.DEBUG)
+logger = logging.getLogger('stack')
 
 threshold = 0
 token = "EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
@@ -80,9 +86,11 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         for obj in potential_vendor_information:
             distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
     else:
-        # TODO : HANDLE CASE WHEN NOBODYA HAS REQUIRED AMOUNT OF MEDICIN
+        print("Sorry Nobody has medicine")
+        # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
         pass
     dist = sorted(range(len(distance)), key=lambda k: distance[k])
+
     elements = []
     for i in dist:
         location = get_location_url(obj.lat, obj.long)
@@ -182,7 +190,7 @@ def reply_for_query(fb_id, fb_text):
     #data = text_template(fb_id, "i didnt understand!")
     #print(data)
     context=util.get_context(fb_id)
-    print("curren context:",context)
+    logger.info("current context "+str(context))
     if context is None:
         text = fb_text['message']["text"]
         intent, parameter = apiai_query(text)
@@ -191,7 +199,7 @@ def reply_for_query(fb_id, fb_text):
             button1=buttons("postback",title="Need Medicine",payload="NEED")
             button2 = buttons("postback", title="Upload Medicine", payload="UPDATE")
             data = button_template_class(fb_id, "How may I help you?", buttons=[button1.__dict__,button2.__dict__]).__dict__
-            print("printing data")
+            logger.info("Printing data")
             print(data)
             create_context(fb_id,"intent_type",None)
         #     TODO:set the context to need or update medicine
@@ -228,7 +236,6 @@ def reply_for_query(fb_id, fb_text):
         util.remove_context(fb_id)
         if fb_text["postback"]["payload"]=="NEED":
             data = text_template(fb_id,"Which medicine do you need?")
-            reply(data)
             create_context(fb_id, "need_med", None)
         elif fb_text["postback"]["payload"]=="UPDATE":
             data = text_template(fb_id,"Which medicine do you want to update?")
@@ -252,6 +259,7 @@ def reply_for_query(fb_id, fb_text):
     elif context == "MISSING_QTY":
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
+
         quantity = fb_text['message']['text']
         generic_data = query_medicine_response_builder(fb_id, brand, quantity)
         data = generic_data.__dict__
@@ -290,7 +298,7 @@ def reply_for_query(fb_id, fb_text):
 def reply(data):
     json_data = json.dumps(data)
     print("What is this json data")
-    print(json_data)
+    logger.info("json data "+str(json_data))
     req = requests.post("https://graph.facebook.com/v2.6/me/messages",params={"access_token": token}, \
                         headers={"Content-Type": "application/json"},data=json_data)
     print(req.content)
@@ -304,9 +312,9 @@ def hello_world():
 
             return request.args.get('hub.challenge', '')
     else:
-        print("got a message")
+        logger.info("Got a message")
         a = request.get_json()
-        print(a)
+        logger.info(str(a))
         fb_id = a['entry'][0]['messaging'][0]['sender']['id']
 
         if not search_user(fb_id):
@@ -381,7 +389,7 @@ def hello_world():
             fb_text = a['entry'][0]['messaging'][0]
             thread1 = threading.Thread(target=reply_for_query, args=(fb_id, fb_text,))
 
-        print("Starting thread")
+        logger.info("Starting thread")
         thread1.start()
 
     return "ok"

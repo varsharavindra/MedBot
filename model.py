@@ -1,12 +1,18 @@
 from flask import render_template, request
 from flask import Flask
 from flaskext.mysql import MySQL
+import logging
 
 import os.path
 from uitemplates import button_template,text_template,quick_reply_type,quick_reply_template_class
 import json
 from nlp import apiai_query
 import util
+
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%d-%m-%Y:%H:%M:%S',
+    level=logging.DEBUG)
+logger = logging.getLogger('stack')
 
 app=Flask(__name__)
 
@@ -116,11 +122,12 @@ def search_user_for_med(fb_id,quantity,name_of_med):
                     from users u,med_acc a
                     where a.qty>='%s' and u.cust_id=a.cust_id and u.cust_id in(select cust_id from med_acc where med_id in(select med_id from med_det where trade_name='%s'))"""% (quantity,name_of_med))
     user_informations = cursor.fetchall()
+    logger.info("User info "+str(user_informations))
     potential_vendor_list=[]
     for user_information in user_informations:
         # with open(str(fb_id) + "_requested_full_qty" + ".txt", "a") as f:
         #     f.write(str(user_information[1])+"\n"+str(user_information[2])+"\n"+str(user_information[3])+"\n"+str(user_information[4])+"\n"+str(user_information[5])+"\n"+str(user_information[6])+"\n")
-        print(user_information)
+
         obj=vendor(user_information[0],user_information[1],user_information[2],user_information[3],user_information[4],user_information[5])
         potential_vendor_list.append(obj)
 
@@ -143,7 +150,7 @@ def search_user_for_med(fb_id,quantity,name_of_med):
                      user_information[4], user_information[5])
         impotential_vendor_list.append(obj)
     db.close()
-    print(potential_vendor_list)
+    logger.info("Potential vendor list "+str(potential_vendor_list))
 
     return potential_vendor_list,impotential_vendor_list
 
@@ -154,7 +161,7 @@ def current_user(fb_id):
     cursor.execute("""SELECT location from users where cust_id='%s'"""%(fb_id))
     row = cursor.fetchone()
     db.close()
-    print(row)
+    logger.info("row "+str(row))
     return row[0]
 
 
@@ -190,7 +197,7 @@ def get_med_info(batch_id,cust_id):
     cursor.execute("select l.mfg_date, l.exp_date,l.cost from med_list as l where l.med_id in\
  (select d.med_id from med_det d where d.med_id in(select a.med_id from med_acc a where cust_id='%s' and batch_id='%s'))"% (cust_id,batch_id))
     data=cursor.fetchone()
-    print(data)
+    logger.info("data "+str(data))
     return data
 
 def get_med_data(batch_id,med_id):
@@ -199,7 +206,7 @@ def get_med_data(batch_id,med_id):
     cursor = db.cursor()
     cursor.execute("""SELECT mfg_date,exp_date,cost from med_list where batch_id='%s' and med_id='%s'"""%(batch_id,med_id))
     data=cursor.fetchone()
-    print(data)
+    logger.info("data "+str(data))
     db.close()
     return data
 
@@ -210,7 +217,7 @@ def get_drug_trade(med_id):
     cursor.execute("""SELECT drug_name,trade_name from med_det where med_id='%s'"""%(med_id))
     data = cursor.fetchone()
     db.close()
-    print(data[0])
+    logger.info("This is an info log"+str(data[0]))
     return data
 
 def get_email(phone_number):
@@ -220,7 +227,7 @@ def get_email(phone_number):
     cursor.execute("""SELECT email from users where phoneno='%s'"""%(phone_number))
     data = cursor.fetchone()
     db.close()
-    print(data[0])
+    logger.info("This is an info log" + str(data[0]))
     return data
 
 def get_med_for_user(fb_id):
@@ -230,7 +237,7 @@ def get_med_for_user(fb_id):
     cursor.execute("""SELECT trade_name from med_det where med_id in(select med_id from med_acc where cust_id='%s')"""%fb_id)
     data = cursor.fetchone()
     db.close()
-    print(data[0])
+    logger.info("This is an info log" + str(data[0]))
     return data
 
 def update_quantity(fb_id,tradename,qty):
@@ -243,7 +250,7 @@ def update_quantity(fb_id,tradename,qty):
     cursor.execute("""SELECT qty from med_acc where cust_id='%s'"""%(fb_id))
     row=cursor.fetchone()
     db.close()
-    print(row)
+    logger.info("This is an info log" + str(row))
 
 
 

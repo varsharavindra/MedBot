@@ -7,7 +7,12 @@ class quick_reply_type(Enum):
     location=2
     email=3
 
+import logging
 
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%d-%m-%Y:%H:%M:%S',
+    level=logging.DEBUG)
+logger = logging.getLogger('stack')
 
 def number_of_buttons(type, url, title):
     var = {
@@ -111,7 +116,7 @@ class subscription(base_reply_template):
 
 class text_template_class(base_reply_template):
     def __init__(self,fb_id,text,**kwargs):
-            print(message(text=text).__dict__)
+            logger.info("This is an info log" + str(message(text=text).__dict__))
             super(text_template_class,self).init("RESPONSE",fb_id,message(text=text).__dict__,subscription_message=True)
 
 def text_template(fb_id, reply_message,quick_reply=False,**kargs):
@@ -138,7 +143,7 @@ def text_template(fb_id, reply_message,quick_reply=False,**kargs):
             quick_replies.append(t)
 
         text_data["message"]["quick_replies"]=quick_replies
-    print(text_data)
+    logger.info("text data "+str(text_data))
     return text_data
 
 

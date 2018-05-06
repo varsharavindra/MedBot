@@ -1,7 +1,12 @@
 import os
 import pickle
 import model
+import logging
 
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%d-%m-%Y:%H:%M:%S',
+    level=logging.DEBUG)
+logger = logging.getLogger('stack')
 
 def create_context(fb_id,status,obj):
     mysql = model.med()
@@ -15,7 +20,7 @@ def create_context(fb_id,status,obj):
     else:
         status = cursor.execute("""update context set context='%s' where fb_id='%s'"""%(status,fb_id))
     db.commit()
-    print("status context created"+str(status))
+    logger.info("status context created " + str(status))
     db.close()
     
 def get_context(fb_id):
@@ -31,7 +36,7 @@ def get_context(fb_id):
         return None
     elif data[0] == "None":
         return None
-    print(data[0])
+    logger.info("data" + str(data[0]))
     return data[0]
 
 def get_context_data(fb_id):
@@ -41,7 +46,7 @@ def get_context_data(fb_id):
     cursor.execute("""select data from context where fb_id='%s'""" % (fb_id))
     data = cursor.fetchone()
     db.close()
-    print(data[0])
+    logger.info("data " + str(data[0]))
     if data == None:
         return None
     else:
