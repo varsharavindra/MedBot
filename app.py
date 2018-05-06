@@ -360,7 +360,8 @@ def hello_world():
                         user_phone = f.readline()
                         user_email = f.readline()
                         user_location = f.readline()
-                    insert_query_users(user_name, location, user_phone, user_email, fb_id)
+
+                    insert_query_users(user_name, location, user_phone, user_email, fb_id,0)
                     os.remove(str(fb_id) + ".txt")
                     os.remove(str(fb_id) + "_status" + ".txt")
                     data = text_template(fb_id, "Thank you for registering with us")

@@ -64,12 +64,12 @@ def med_query(medicine):
     return data
 
 
-def insert_query_users(uname, location, phoneno, email, cust_id):
+def insert_query_users(uname, location, phoneno, email, cust_id,typeofuser):
     mysql = med()
     db = mysql.connect()
     cursor=db.cursor()
     print("""insert into users values( '%s','%s','%s','%s','%s')"""%(uname,location,phoneno,email,cust_id))
-    cursor.execute("""insert into users values('%s','%s','%s','%s','%s')""" % (uname,location,phoneno,email,cust_id))
+    cursor.execute("""insert into users values('%s','%s','%s','%s','%s',%d)""" % (uname,location,phoneno,email,cust_id,typeofuser))
     db.commit()
 
 def insert_query_med_acc(cust_id, med_id, batch_id, qty):
