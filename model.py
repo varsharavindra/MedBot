@@ -217,7 +217,7 @@ def get_drug_trade(med_id):
     cursor.execute("""SELECT drug_name,trade_name from med_det where med_id='%s'"""%(med_id))
     data = cursor.fetchone()
     db.close()
-    logger.info("This is an info log"+str(data[0]))
+    logger.info("This is an info log"+str(data))
     return data
 
 def get_email(phone_number):
@@ -227,7 +227,7 @@ def get_email(phone_number):
     cursor.execute("""SELECT email from users where phoneno='%s'"""%(phone_number))
     data = cursor.fetchone()
     db.close()
-    logger.info("This is an info log" + str(data[0]))
+    logger.info("This is an info log" + str(data))
     return data
 
 def get_med_for_user(fb_id):
@@ -237,7 +237,7 @@ def get_med_for_user(fb_id):
     cursor.execute("""SELECT trade_name from med_det where med_id in(select med_id from med_acc where cust_id='%s')"""%fb_id)
     data = cursor.fetchone()
     db.close()
-    logger.info("This is an info log" + str(data[0]))
+    logger.info("This is an info log" + str(data))
     return data
 
 def update_quantity(fb_id,tradename,qty):

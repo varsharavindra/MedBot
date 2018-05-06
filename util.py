@@ -36,7 +36,7 @@ def get_context(fb_id):
         return None
     elif data[0] == "None":
         return None
-    logger.info("data" + str(data[0]))
+    logger.info("data" + str(data))
     return data[0]
 
 def get_context_data(fb_id):
@@ -46,7 +46,7 @@ def get_context_data(fb_id):
     cursor.execute("""select data from context where fb_id='%s'""" % (fb_id))
     data = cursor.fetchone()
     db.close()
-    logger.info("data " + str(data[0]))
+    logger.info("data " + str(data))
     if data == None:
         return None
     else:

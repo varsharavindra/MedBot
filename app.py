@@ -86,7 +86,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         for obj in potential_vendor_information:
             distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
     else:
-        print("Sorry Nobody has medicine")
+        logger.info("Sorry nobody has medicine")
         # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
         pass
     dist = sorted(range(len(distance)), key=lambda k: distance[k])
