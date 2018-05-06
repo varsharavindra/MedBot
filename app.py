@@ -89,7 +89,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         user_name = potential_vendor_information[i].uname
         subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
             potential_vendor_information[i].qty)
-        btn = buttons("web_url", location, "got to location")
+        btn = buttons("web_url",url=location,type="got to location")
         elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                    button=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
