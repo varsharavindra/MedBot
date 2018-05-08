@@ -295,7 +295,7 @@ def reply_for_query(fb_id, fb_text):
         logger.info("Quantity check")
         #todo : check if this quantity is less than that of present quantity
         if compare_qty(fb_id, qty_of_med, medi_name) == True:
-            logger.info("Quantity is less")
+            logger.info("User Quantity is less")
             update_quantity(fb_id, medi_name, qty_of_med)
             button1 = buttons("postback", title="YES", payload="YES")
             button2 = buttons("postback", title="NO", payload="NO")
@@ -303,6 +303,7 @@ def reply_for_query(fb_id, fb_text):
                                             "update more medicine?", buttons=[button1.__dict__, button2.__dict__]).__dict__
             create_context(fb_id,"more_updation",None)
         else:
+            logger.info("User qty is more")
             data = text_template(fb_id, "Quantity of your medicine may only be reduced!")
             remove_context(fb_id)
 
