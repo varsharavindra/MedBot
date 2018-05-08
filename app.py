@@ -196,20 +196,33 @@ def reply_for_query(fb_id, fb_text):
                 drug = parameter["drug"]
                 # TODO GET BRAND NAME IF DRUGNAME IS GIVEN
                 trade_name = search_trade_for_drug(fb_id, drug)
-            else:
+                if not parameter.get("number") is '':
+                    quantity = parameter["number"]
+                    # if type(quantity) == str:
+                    #     quantity = numbers_in_words['quantity']
+                    generic_data = query_medicine_response_builder(fb_id, trade_name, quantity)
+                    data = generic_data.__dict__
+                else:
+                    # TODO Handle case when user texts only with medicine name
+                    util.create_context(fb_id, "MISSING_QTY", (trade_name))
+                    data = text_template(fb_id, "How much quantity do you need?")
+            elif not parameter.get("brand") is '':
                 #Todo : brand not present in json
                 trade_name = parameter["brand"]
+                if not parameter.get("number") is '':
+                    quantity = parameter["number"]
+                    # if type(quantity) == str:
+                    #     quantity = numbers_in_words['quantity']
+                    generic_data = query_medicine_response_builder(fb_id, trade_name, quantity)
+                    data = generic_data.__dict__
+                else:
+                    # TODO Handle case when user texts only with medicine name
+                    util.create_context(fb_id, "MISSING_QTY", (trade_name))
+                    data = text_template(fb_id, "How much quantity do you need?")
 
-            if not parameter.get("number", None) is None:
-                quantity = parameter["number"]
-                # if type(quantity) == str:
-                #     quantity = numbers_in_words['quantity']
-                generic_data = query_medicine_response_builder(fb_id, trade_name, quantity)
-                data = generic_data.__dict__
-            else:
-                # TODO Handle case when user texts only with medicine name
-                util.create_context(fb_id, "MISSING_QTY", (trade_name))
-                data = text_template(fb_id, "How much quantity do you need?")
+            elif parameter.get("drug") is '' and parameter.get("brand") is '':
+                data = text_template(fb_id, "Sorry, didn't quite get you, which medicine do you need?")
+                create_context(fb_id,"need_med", None)
 
         else:
             #TODO:handle case for update medicine
