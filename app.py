@@ -241,7 +241,9 @@ def reply_for_query(fb_id, fb_text):
             data = text_template(fb_id,"Which medicine do you need?")
             create_context(fb_id, "need_med", None)
         elif fb_text["postback"]["payload"]=="UPDATE":
-            data = text_template(fb_id,"Which medicine do you want to update?")
+            logger.info("update medicine")
+            data = text_template(fb_id,"Only already existing medicine quantities may be reduced. Which medicine do you"
+                                       "want to update?")
             create_context(fb_id, "update_med", None)
 
     elif context == "need_med":
@@ -253,6 +255,9 @@ def reply_for_query(fb_id, fb_text):
     elif context == "update_med":
             util.remove_context(fb_id)
             med_name = fb_text['message']['text']
+            #Todo : see if this person has this message assuming he gives tradename
+            #Todo : what if he gives drug name?
+
             data = text_template(fb_id,"How much quantity of "+med_name+" is left?")
             #Todo: Mention previous quantity
             create_context(fb_id, "reduce_qty", (med_name))

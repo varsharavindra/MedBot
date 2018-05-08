@@ -252,6 +252,20 @@ def update_quantity(fb_id,tradename,qty):
     db.close()
     logger.info("This is an info log" + str(row))
 
+def get_qty_of_uploader(fb_id, medname):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""select qty from med_acc where cust_id='%s' and med_id in(select med_id from med_det where trade_name='%s')"""%(fb_id, medname))
+    data = cursor.fetchone()
+    db.close()
+    logger.info("This is an info log" + str(data))
+    if data is None:
+        return False
+    else:
+        return data[0]
+
+
 
 
 
