@@ -102,7 +102,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
                                                        buttons=[btn.__dict__]).__dict__)
         generic_data = generic_template_class(fb_id, elements)
-        return generic_data
+        return generic_data.__dict__
     else:
         elements_pharma = []
         logger.info("Sorry nobody has medicine")
@@ -131,9 +131,9 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             logger.info("pharma name")
             btn1 = buttons("web_url",url=pharmacy_location,title="go to location")
             elements_pharma.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
-                                                        buttons=[btn1.__dict__]))
+                                                        buttons=[btn1.__dict__]).__dict__)
         generic_data = generic_template_class(fb_id, elements_pharma)
-        return generic_data
+        return generic_data.__dict__
 
 
 
