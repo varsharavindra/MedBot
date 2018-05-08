@@ -117,6 +117,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         for p in pharmacy_data['results']:
             pharmacy_latitude.append(p['geometry']['location']['lat'])
             pharmacy_longitude.append(p['geometry']['location']['lng'])
+            pharmacy_name.append(p['name'])
         # print(pharmacy_latitude)
         # print(pharmacy_longitude)
         # print(pharmacy_name)
