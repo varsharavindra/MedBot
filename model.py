@@ -244,7 +244,7 @@ def update_quantity(fb_id,tradename,qty):
     mysql = med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""update med_acc set qty='%d' where cust_id='%s' and med_id in(select med_id from med_det 
+    cursor.execute("""update med_acc set qty=%d where cust_id='%s' and med_id in(select med_id from med_det 
                         where trade_name='%s')"""%(qty, fb_id, tradename))
     data = cursor.fetchone()
     db.close()
