@@ -210,11 +210,6 @@ def reply_for_query(fb_id, fb_text):
                 util.create_context(fb_id, "MISSING_QTY", (trade_name))
                 data = text_template(fb_id, "How much quantity do you need?")
 
-            if
-
-
-
-
         else:
             #TODO:handle case for update medicine
             list_of_med = get_med_for_user(fb_id)
