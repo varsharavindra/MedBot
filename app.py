@@ -50,7 +50,7 @@ app.config['SECRET_KEY'] = "abcdefghijn"
 def get_location_url(lat, long):
     return "https://www.google.com/maps/search/?api=1&query=" + str(lat) + "," + str(long)
 
-numbers_in_words = {'one':1,'two':2,'three':3,'four':4,}
+numbers_in_words = {'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10}
 
 def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
     for i in potential_dist:
@@ -89,6 +89,20 @@ def query_medicine_response_builder(fb_id, brand, quantity):
     if len(potential_vendor_information) > threshold:
         for obj in potential_vendor_information:
             distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
+
+        dist = sorted(range(len(distance)), key=lambda k: distance[k])
+
+        elements = []
+        for i in dist:
+            location = get_location_url(obj.lat, obj.long)
+            user_name = potential_vendor_information[i].uname
+            subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
+                potential_vendor_information[i].qty)
+            btn = buttons("web_url", url=location, title="got to location")
+            elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
+                                                       buttons=[btn.__dict__]).__dict__)
+        generic_data = generic_template_class(fb_id, elements)
+        return generic_data
     else:
         elements_pharma = []
         logger.info("Sorry nobody has medicine")
@@ -106,6 +120,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         print(pharmacy_latitude)
         print(pharmacy_longitude)
         print(pharmacy_name)
+        logger.info("Entering for loop")
         for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
             print(x,y,z)
             pharmacy_location = get_location_url(x, y)
@@ -114,20 +129,9 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             elements_pharma.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
                                                         buttons=[btn1.__dict__]))
         generic_data = generic_template_class(fb_id, elements_pharma)
+        return generic_data
 
-    dist = sorted(range(len(distance)), key=lambda k: distance[k])
 
-    elements = []
-    for i in dist:
-        location = get_location_url(obj.lat, obj.long)
-        user_name = potential_vendor_information[i].uname
-        subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
-            potential_vendor_information[i].qty)
-        btn = buttons("web_url",url=location,title="got to location")
-        elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
-                                                   buttons=[btn.__dict__]).__dict__)
-    generic_data = generic_template_class(fb_id, elements)
-    return generic_data
 
 
     # if not potential_vendor_information and impotential_vendor_information:
@@ -197,6 +201,8 @@ def reply_for_query(fb_id, fb_text):
 
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
+                if type(quantity) == str:
+                    quantity = numbers_in_words[quantity]
                 generic_data = query_medicine_response_builder(fb_id, trade_name, quantity)
                 data = generic_data.__dict__
             else:
@@ -255,6 +261,8 @@ def reply_for_query(fb_id, fb_text):
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
         quantity = fb_text['message']['text']
+        if type(quantity) == str:
+            quantity = numbers_in_words[quantity]
         generic_data = query_medicine_response_builder(fb_id, brand, quantity)
         data = generic_data.__dict__
 
