@@ -292,8 +292,10 @@ def reply_for_query(fb_id, fb_text):
         medi_name = util.get_context_data(fb_id)
         util.remove_context(fb_id)
         qty_of_med = fb_text['message']["text"]
+        logger.info("Quantity check")
         #todo : check if this quantity is less than that of present quantity
         if compare_qty(fb_id, qty_of_med, medi_name) == True:
+            logger.info("Quantity is less")
             update_quantity(fb_id, medi_name, qty_of_med)
             button1 = buttons("postback", title="YES", payload="YES")
             button2 = buttons("postback", title="NO", payload="NO")
