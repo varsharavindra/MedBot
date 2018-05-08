@@ -108,7 +108,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         logger.info("Sorry nobody has medicine")
         # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
         request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=500&key="+google_places_api_key)
-        print(request_pharmacy.content)
+        #print(request_pharmacy.content)
         pharmacy_data = request_pharmacy.json()
         #print(pharmacy_data['results'][0]['geometry']['location']['lat'])
         pharmacy_name = []
