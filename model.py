@@ -152,7 +152,8 @@ def search_user_for_med(fb_id,quantity,name_of_med):
     db.close()
     logger.info("Potential vendor list "+str(potential_vendor_list))
 
-    return potential_vendor_list,impotential_vendor_list
+    potential_vendor_list.extend(impotential_vendor_list)
+    return potential_vendor_list
 
 def current_user(fb_id):
     mysql = med()

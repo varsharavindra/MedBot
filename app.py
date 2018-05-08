@@ -50,6 +50,8 @@ app.config['SECRET_KEY'] = "abcdefghijn"
 def get_location_url(lat, long):
     return "https://www.google.com/maps/search/?api=1&query=" + str(lat) + "," + str(long)
 
+numbers_in_words = {'one':1,'two':2,'three':3,'four':4,}
+
 def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
     for i in potential_dist:
         button1 = buttons("postback", title="Yes, proceed", payload="YES")
@@ -81,17 +83,38 @@ def query_medicine_response_builder(fb_id, brand, quantity):
     distance = []
 
     logging.info("finding users for brand:"+brand)
-    potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
-                                                                                       brand)
+    potential_vendor_information = search_user_for_med(fb_id, quantity, brand)
     current_user_location = current_user(fb_id)
     latitude, longitude = current_user_location.split(":")
     if len(potential_vendor_information) > threshold:
         for obj in potential_vendor_information:
             distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
     else:
+        elements_pharma = []
         logger.info("Sorry nobody has medicine")
         # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
-        pass
+        request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=500&key="+google_places_api_key)
+        print(request_pharmacy.content)
+        pharmacy_data = request_pharmacy.json()
+        print(pharmacy_data['results'][0]['geometry']['location']['lat'])
+        pharmacy_name = []
+        pharmacy_latitude = []
+        pharmacy_longitude = []
+        for p in pharmacy_data['results']:
+            pharmacy_latitude.append(p['geometry']['location']['lat'])
+            pharmacy_longitude.append(p['geometry']['location']['lng'])
+        print(pharmacy_latitude)
+        print(pharmacy_longitude)
+        print(pharmacy_name)
+        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
+            print(x,y,z)
+            pharmacy_location = get_location_url(x, y)
+            pharma_name = z
+            btn1 = buttons("web_url", pharmacy_location, "go to location")
+            elements_pharma.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
+                                                        buttons=[btn1.__dict__]))
+        generic_data = generic_template_class(fb_id, elements_pharma)
+
     dist = sorted(range(len(distance)), key=lambda k: distance[k])
 
     elements = []
@@ -105,54 +128,9 @@ def query_medicine_response_builder(fb_id, brand, quantity):
                                                    buttons=[btn.__dict__]).__dict__)
     generic_data = generic_template_class(fb_id, elements)
     return generic_data
-    # potential_distance = []
-    # impotential_distance = []
-    # elements = []
-    # elements1 = []
-    # elements2 = []
-    # potential_vendor_information, impotential_vendor_information = search_user_for_med(fb_id, quantity,
-    #                                                                                    brand)
-    #
-    #
-    # current_user_location = current_user(fb_id)
-    # latitude, longitude = current_user_location.split(":")
-    # if len(potential_vendor_information) > threshold:
-    #     for obj in potential_vendor_information:
-    #         potential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
-    # potential_dist = sorted(range(len(potential_distance)), key=lambda k: potential_distance[k])
-    # if len(impotential_vendor_information) > threshold:
-    #
-    #     for obj in impotential_vendor_information:
-    #         impotential_distance.append(nearest_location(latitude, longitude, obj.lat, obj.long))
-    # impotential_dist = sorted(range(len(impotential_distance)), key=lambda k: impotential_distance[k])
-    #
-    #
-    #
-    # for i in potential_dist:
-    #     location = get_location_url(obj.lat, obj.long)
-    #     user_name = potential_vendor_information[i].uname
-    #     subtitle = "Phone: " + str(potential_vendor_information[i].phone) + "\nQuantity: " + str(
-    #         potential_vendor_information[i].qty)
-    #     btn = buttons("web_url", location, "go to location in maps")
-    #     elements.append(genereic_template_elements(user_name, image_url=user_url, subtitle=subtitle,
-    #                                                buttons=[btn.__dict__]))
-    # generic_data = generic_template_class(fb_id, elements)
-    #
-    #
-    #
-    #
-    #
-    # for i in impotential_dist:
-    #     location1 = get_location_url(obj.lat,obj.long)
-    #     user_name1 = impotential_vendor_information[i].uname
-    #     subtitle1 = "Phone: " + str(impotential_vendor_information[i].phone) + "\nQuantity: " + str(
-    #         impotential_vendor_information[i].qty)
-    #     btn1 = buttons("web_url",location1,"Go to location in maps")
-    #     elements1.append(genereic_template_elements(user_name1,image_url=user_url, subtitle=subtitle1,
-    #                                                buttons=[btn1.__dict__]))
-    # #generic_data = generic_template_class(fb_id, elements1)
-    #
-    # #if not potential_vendor_information and impotential_vendor_information:
+
+
+    # if not potential_vendor_information and impotential_vendor_information:
     # request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=500&key="+google_places_api_key)
     # print(request_pharmacy.content)
     # pharmacy_data = request_pharmacy.json()
@@ -516,32 +494,7 @@ def send_bill_information(cust_id,**kwargs):
             print('Something went wrong...')
 
 
-# def reply_for_request():
-#     a = request.get_json()
-#     fb_id = a['entry'][0]['messaging'][0]['sender']['id']
-#     with open(str(fb_id) + "_requested_full_qty" + ".txt", "r") as f:
-#         uploader_cust_id = f.readline()
-#         uploader_uname = f.readline()
-#         uploader_location = f.readline()
-#         uploader_phoneno = f.readline()
-#         uploader_email = f.readline()
-#         uploader_qty = f.readline()
-#     os.remove(str(fb_id) + "_requested_full_qty" + ".txt")
-#     data_name = text_template(fb_id, uploader_uname)
-#     json_data_name = json.dumps(data_name)
-#     print(json_data_name)
 
-    # with open(str(fb_id) + "_requested_less_qty" + ".txt", "r") as f:
-    #     uploader_cust_id_1 = f.readline()
-    #     uploader_uname_1 = f.readline()
-    #     uploader_location_1 = f.readline()
-    #     uploader_phoneno_1 = f.readline()
-    #     uploader_email_1 = f.readline()
-    #     uploader_qty_1 = f.readline()
-    # os.remove(str(fb_id) + "_requested_less_qty" + ".txt")
-    # data_name_1 = text_template(fb_id, uploader_uname_1)
-    # json_data_name_1 = json.dumps(data_name)
-    # print(json_data_name_1)
 
 
 #@app.route('/varsha',methods=['GET', 'POST'])
