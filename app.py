@@ -124,8 +124,10 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
             #print(x,y,z)
             logger.info("pharmacy generic response")
-            pharmacy_location = get_location_url(x, y)
+            pharmacy_location = get_location_url(str(x), str(y))
+            logger.info("pharma location")
             pharma_name = z
+            logger.info("pharma name")
             btn1 = buttons("web_url",url=pharmacy_location,title="go to location")
             elements_pharma.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
                                                         buttons=[btn1.__dict__]))
