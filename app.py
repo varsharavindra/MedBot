@@ -276,7 +276,6 @@ def reply_for_query(fb_id, fb_text):
     elif context == "MISSING_QTY":
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
-
         quantity = fb_text['message']['text']
         generic_data = query_medicine_response_builder(fb_id, brand, quantity)
         data = generic_data.__dict__
