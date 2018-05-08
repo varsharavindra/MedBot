@@ -201,8 +201,8 @@ def reply_for_query(fb_id, fb_text):
 
             if not parameter.get("number", None) is None:
                 quantity = parameter["number"]
-                if type(quantity) == str:
-                    quantity = numbers_in_words['quantity']
+                # if type(quantity) == str:
+                #     quantity = numbers_in_words['quantity']
                 generic_data = query_medicine_response_builder(fb_id, trade_name, quantity)
                 data = generic_data.__dict__
             else:
@@ -262,8 +262,8 @@ def reply_for_query(fb_id, fb_text):
         brand = util.get_context_data(fb_id)
         util.remove_context(fb_id)
         quantity = fb_text['message']['text']
-        if type(quantity) == str:
-            quantity = numbers_in_words[quantity]
+        # if type(quantity) == str:
+        #     quantity = numbers_in_words[quantity]
         generic_data = query_medicine_response_builder(fb_id, brand, quantity)
         data = generic_data.__dict__
 
