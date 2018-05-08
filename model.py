@@ -294,7 +294,7 @@ def compare_qty(fb_id, qty, medname):
     if data is None:
         return False
     else:
-        if qty <= data[0]:
+        if qty <= int(data[0]):
             return True
         else:
             return False
