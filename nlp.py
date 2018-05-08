@@ -44,7 +44,7 @@ def apiai_query(msg):
         if data1["result"]["metadata"]["intentName"] == Query_medicine:
             return Query_medicine, data1["result"]["parameters"],
         else:
-            if data1["result"]["metadata"] == Upload_medicine:
+            if data1["result"]["metadata"]["intentName"] == Upload_medicine:
                 return Upload_medicine, "None"
 
 # print(data['res'])
