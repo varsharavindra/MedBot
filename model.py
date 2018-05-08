@@ -247,10 +247,8 @@ def update_quantity(fb_id,tradename,qty):
     cursor.execute("""update med_acc set qty='%d' where cust_id='%s' and med_id in(select med_id from med_det 
                         where trade_name='%s')"""%(qty, fb_id, tradename))
     data = cursor.fetchone()
-    cursor.execute("""SELECT qty from med_acc where cust_id='%s'"""%(fb_id))
-    row=cursor.fetchone()
     db.close()
-    logger.info("This is an info log" + str(row))
+    logger.info("This is an info log" + str(data))
 
 def get_qty_of_uploader(fb_id, medname):
     mysql = med()
@@ -265,7 +263,41 @@ def get_qty_of_uploader(fb_id, medname):
     else:
         return data[0]
 
+def check_med_for_cust(fb_id, medname):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute(
+        """select * from med_acc where cust_id='%s' and med_id in
+        (select med_id from med_det where trade_name='%s')""" % (
+        fb_id, medname))
+    data = cursor.fetchone()
+    db.close()
+    logger.info("This is an info log" + str(data))
+    if data is None:
+        return False
+    else:
+        return True
 
+
+def compare_qty(fb_id, qty, medname):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute(
+        """select qty from med_acc where cust_id='%s' and med_id in
+        (select med_id from med_det where trade_name='%s')""" % (
+            fb_id, medname))
+    data = cursor.fetchone()
+    db.close()
+    logger.info("This is an info log" + str(data))
+    if data is None:
+        return False
+    else:
+        if qty <= data[0]:
+            return True
+        else:
+            return False
 
 
 
@@ -274,9 +306,10 @@ if __name__ == '__main__':
     #     insert_query_med_det("100","abc","zts","xyz")
     #   insert_query_users('vivek', '37.483872693672,-122.14900441942', '7406160779', 'v@gmail.com', '11')
     #   x=search_user(100)
-     search_user_for_med("100","7","crocin")
+     #search_user_for_med("100","7","crocin")
     # get_med_data("c300","200")
     # get_drug_trade("200")
     # get_email("9986427925")
     # get_med_for_user("100")
     #update_quantity("100","crocin",7)
+    get_qty_of_uploader('1824444647629972','cifro')

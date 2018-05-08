@@ -8,6 +8,7 @@ from uitemplates import button_template, text_template, quick_reply_type, quick_
 from nlp import apiai_query, Query_medicine, Upload_medicine, General_Talk
 from uitemplates import genereic_template_elements, buttons,button_template_class,subscription
 from util import *
+from model import *
 import threading
 from threading import Thread
 import json
@@ -255,12 +256,20 @@ def reply_for_query(fb_id, fb_text):
     elif context == "update_med":
             util.remove_context(fb_id)
             med_name = fb_text['message']['text']
+            # todo : convert text to appropriate format
+            # todo : check if that user has that medicine
+            if check_med_for_cust(fb_id,med_name) == True:
+                data = text_template(fb_id, "How much quantity of " + med_name + " is left?")
+                create_context(fb_id, "reduce_qty", (med_name))
+            else:
+                data = text_template(fb_id, "New medicine cannot be uploaded directly, please contact your pharmacy for further detils")
+                create_context(fb_id,"None", None)
             #Todo : see if this person has this message assuming he gives tradename
             #Todo : what if he gives drug name?
 
-            data = text_template(fb_id,"How much quantity of "+med_name+" is left?")
+
             #Todo: Mention previous quantity
-            create_context(fb_id, "reduce_qty", (med_name))
+
 
 
 
@@ -273,23 +282,27 @@ def reply_for_query(fb_id, fb_text):
         data = generic_data.__dict__
 
 
-    elif context == "reduce_qty":
-        util.remove_context(fb_id)
-        name_of_med = fb_text['message']['text']
-        data = text_template(fb_id, "What quantity of "+name_of_med+" medicine is left?")
-        create_context(fb_id, "upload_qty", (name_of_med))
+    # elif context == "reduce_qty":
+    #     util.remove_context(fb_id)
+    #     name_of_med = fb_text['message']['text']
+    #     data = text_template(fb_id, "What quantity of "+name_of_med+" medicine is left?")
+    #     create_context(fb_id, "upload_qty", (name_of_med))
 
-    elif context == "upload_qty":
+    elif context == "reduce_qty":
         medi_name = util.get_context_data(fb_id)
         util.remove_context(fb_id)
         qty_of_med = fb_text['message']["text"]
-        #Todo: med_id is unique for every batch id?
-        update_quantity(fb_id, medi_name, qty_of_med)
-        button1 = buttons("postback", title="YES", payload="YES")
-        button2 = buttons("postback", title="NO", payload="NO")
-        data = button_template_class(fb_id, "The quantity of "+medi_name+" has been successfully updated, want to"
+        #todo : check if this quantity is less than that of present quantity
+        if compare_qty(fb_id, qty_of_med, medi_name) == True:
+            update_quantity(fb_id, medi_name, qty_of_med)
+            button1 = buttons("postback", title="YES", payload="YES")
+            button2 = buttons("postback", title="NO", payload="NO")
+            data = button_template_class(fb_id, "The quantity of "+medi_name+" has been successfully updated, want to"
                                             "update more medicine?", buttons=[button1.__dict__, button2.__dict__]).__dict__
-        create_context(fb_id,"more_updation",None)
+            create_context(fb_id,"more_updation",None)
+        else:
+            data = text_template(fb_id, "Quantity of your medicine may only be reduced!")
+            remove_context(fb_id)
 
 
     elif context == "more_updation":
@@ -299,6 +312,7 @@ def reply_for_query(fb_id, fb_text):
             create_context(fb_id, "reduce_qty", None)
         else:
             data = text_template(fb_id, "Thank you for updating!")
+            remove_context(fb_id)
 
     reply(data)
 
