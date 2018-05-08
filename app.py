@@ -122,7 +122,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         # print(pharmacy_longitude)
         # print(pharmacy_name)
         logger.info("Entering for loop")
-        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
+        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name) in range(0,5):
             #print(x,y,z)
             logger.info("pharmacy generic response")
             pharmacy_location = get_location_url(str(x), str(y))
