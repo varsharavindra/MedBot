@@ -122,7 +122,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         # print(pharmacy_longitude)
         # print(pharmacy_name)
         logger.info("Entering for loop")
-        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name) in range(0,5):
+        for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
             #print(x,y,z)
             logger.info("pharmacy generic response")
             pharmacy_location = get_location_url(str(x), str(y))
@@ -132,7 +132,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
             btn1 = buttons("web_url",url=pharmacy_location,title="go to location")
             elements_pharma.append(genereic_template_elements(pharma_name, image_url=user_url, subtitle=False,
                                                         buttons=[btn1.__dict__]).__dict__)
-        generic_data = generic_template_class(fb_id, elements_pharma)
+        generic_data = generic_template_class(fb_id, elements_pharma[:5])
         return generic_data
 
 
