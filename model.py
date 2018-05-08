@@ -246,9 +246,9 @@ def update_quantity(fb_id,tradename,qty):
     cursor = db.cursor()
     cursor.execute("""update med_acc set qty=%d where cust_id='%s' and med_id in(select med_id from med_det 
                         where trade_name='%s')"""%(int(qty), fb_id, tradename))
-    data = cursor.fetchone()
+    db.commit()
     db.close()
-    logger.info("This is an info log" + str(data))
+    logger.info("This is an info log")
 
 def get_qty_of_uploader(fb_id, medname):
     mysql = med()
