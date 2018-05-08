@@ -110,7 +110,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=500&key="+google_places_api_key)
         print(request_pharmacy.content)
         pharmacy_data = request_pharmacy.json()
-        print(pharmacy_data['results'][0]['geometry']['location']['lat'])
+        #print(pharmacy_data['results'][0]['geometry']['location']['lat'])
         pharmacy_name = []
         pharmacy_latitude = []
         pharmacy_longitude = []
@@ -122,7 +122,8 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         # print(pharmacy_name)
         logger.info("Entering for loop")
         for x,y,z in zip(pharmacy_latitude,pharmacy_longitude,pharmacy_name):
-            print(x,y,z)
+            #print(x,y,z)
+            logger.info("pharmacy generic response")
             pharmacy_location = get_location_url(x, y)
             pharma_name = z
             btn1 = buttons("web_url",url=pharmacy_location,title="go to location")
