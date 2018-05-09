@@ -232,6 +232,7 @@ def reply_for_query(fb_id, fb_text):
 
             list_of_med = get_med_for_user(fb_id)
             quan = get_qty_for_user(fb_id)
+            quan=str(quan)
             display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
                          "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
             for med_list,quant in list_of_med,quan:
@@ -249,6 +250,7 @@ def reply_for_query(fb_id, fb_text):
             logger.info("update medicine")
             list_of_med = get_med_for_user(fb_id)
             quan= get_qty_for_user(fb_id)
+            quan=str(quan)
             display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
                           "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
             for med_list,quant in list_of_med and quan:
