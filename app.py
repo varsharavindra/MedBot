@@ -235,7 +235,7 @@ def reply_for_query(fb_id, fb_text):
             quan=str(quan)
             display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
                          "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
-            for med_list,quant in list_of_med,quan:
+            for med_list,quant in zip(list_of_med,quan):
                 display_msg+="\n"+med_list+"\n" +"\t" + quant
             data = text_template(fb_id,display_msg+"\nWhich medicine's quantity do you want to reduce?")
             create_context(fb_id,"update_med",None)
@@ -253,7 +253,7 @@ def reply_for_query(fb_id, fb_text):
             quan=str(quan)
             display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
                           "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
-            for med_list,quant in list_of_med and quan:
+            for med_list,quant in zip(list_of_med and quan):
                 display_msg += "\n" + med_list + "\t" + quant
             data = text_template(fb_id, display_msg + "\nWhich medicine's quantity do you want to reduce?")
             create_context(fb_id, "update_med", None)
