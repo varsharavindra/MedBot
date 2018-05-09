@@ -235,7 +235,7 @@ def get_med_for_user(fb_id):
     mysql = med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""SELECT trade_name from med_det where med_id in(select med_id from med_acc where cust_id='%s')"""%fb_id)
+    cursor.execute("""SELECT trade_name from med_det  where med_id in(select med_id from med_acc  where cust_id='%s')"""%fb_id)
     data = cursor.fetchone()
     db.close()
     logger.info("This is an info log" + str(data))
@@ -300,6 +300,30 @@ def compare_qty(fb_id, qty, medname):
             return True
         else:
             return False
+
+def check_drug(trade_name):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute(
+        """select * from drug where trade_name='%s'"""%(trade_name))
+    data = cursor.fetchone()
+    db.close()
+    logger.info("This is an info log" + str(data))
+    if data is None:
+        return False
+    else:
+        return True
+
+def get_qty_for_user(fb_id):
+    mysql = med()
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("""select qty from med_acc where cust_id='%s')"""%(fb_id))
+    data = cursor.fetchone()
+    db.close()
+    logger.info("This is an info log" + str(data))
+    return data
 
 
 
