@@ -231,12 +231,12 @@ def reply_for_query(fb_id, fb_text):
             #TODO:handle case for update medicine
 
             list_of_med = get_med_for_user(fb_id)
-            quan = get_qty_for_user(fb_id)
-            quan=str(quan)
+            # quan = get_qty_for_user(fb_id)
+            # quan=str(quan)
             display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
                          "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
-            for med_list,quant in zip(list_of_med,quan):
-                display_msg+="\n"+med_list+"\n" +"\t" + quant
+            for med_list in list_of_med:
+                display_msg+="\n"+med_list+"\n"
             data = text_template(fb_id,display_msg+"\nWhich medicine's quantity do you want to reduce?")
             create_context(fb_id,"update_med",None)
 
@@ -249,12 +249,10 @@ def reply_for_query(fb_id, fb_text):
         elif fb_text["postback"]["payload"]=="UPDATE":
             logger.info("update medicine")
             list_of_med = get_med_for_user(fb_id)
-            quan= get_qty_for_user(fb_id)
-            quan=str(quan)
             display_msg = "Medicine quantity can only be reduced here.\nTo update new medicine, kindly contact your" \
                           "pharmacy\nGiven below is the list of medicines whose quantity you may reduce\n"
-            for med_list,quant in zip(list_of_med and quan):
-                display_msg += "\n" + med_list + "\t" + quant
+            for med_list in list_of_med:
+                display_msg += "\n" + med_list+"\n"
             data = text_template(fb_id, display_msg + "\nWhich medicine's quantity do you want to reduce?")
             create_context(fb_id, "update_med", None)
 
