@@ -319,7 +319,8 @@ def get_qty_for_user(fb_id):
     mysql = med()
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("""select qty from med_acc where cust_id='%s')"""%(fb_id))
+    cursor.execute("""
+            select qty from med_acc where cust_id='%s'"""%(fb_id))
     data = cursor.fetchone()
     db.close()
     logger.info("This is an info log" + str(data))
