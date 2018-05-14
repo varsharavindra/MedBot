@@ -16,10 +16,10 @@ logger = logging.getLogger('stack')
 
 app=Flask(__name__)
 
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '1ks14cs119'
-app.config['MYSQL_DATABASE_DB'] = 'medicine'
-app.config['MYSQL_DATABASE_HOST'] = 'medicine.c9llzcxnfscl.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_DATABASE_USER'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_DB'] = ''
+app.config['MYSQL_DATABASE_HOST'] = ''
 
 # app.config['MYSQL_DATABASE_USER'] = 'root'
 # app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
