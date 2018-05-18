@@ -50,7 +50,8 @@ app.config['SECRET_KEY'] = "abcdefghijn"
 def get_location_url(lat, long):
     return "https://www.google.com/maps/search/?api=1&query=" + str(lat) + "," + str(long)
 
-numbers_in_words = {'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10}
+numbers_in_words = {'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10,'eleven':11
+    , 'twelve': 12,'thirteen':13,'fourteen':14,'fifteen':15,'sixteen':16,'seventeen':17}
 
 def time_limit(potential_dist,potential_vendor_information,brand,fb_text):
     for i in potential_dist:
@@ -259,11 +260,7 @@ def reply_for_query(fb_id, fb_text):
     elif context == "need_med":
             util.remove_context(fb_id)
             med_name = fb_text['message']['text']
-            if check_drug(med_name) == True:
-                data = text_template(fb_id, "Please specify the trade name of the medicine, not the medicine/generic name.")
-                create_context(fb_id,"need_med", None)
-            else:
-                data = text_template(fb_id, "How much quantity?")
+            data = text_template(fb_id, "How much quantity?")
             create_context(fb_id, "MISSING_QTY", (med_name))
 
     elif context == "update_med":
@@ -472,7 +469,7 @@ def get_shop_name(xyz):
     return "Banagiri Medicals"
 
 def send_bill_information(cust_id,**kwargs):
-    mydict={'username': 'ravindra', 'phone': '7406160779', 'email': 'varsharavindra27@yahoo.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
+    mydict={'username': 'ravindra', 'phone': '8147383283', 'email': 'varsharavindra27@yahoo.com', 'data': [{'batch_id': 'p302', 'qty': '1', 'med_id': '202'}, {'batch_id': 'p302', 'qty': '1', 'med_id': '202'}]}
 
     phone_number = mydict['phone']
     shop_name=get_shop_name(cust_id)
@@ -500,7 +497,7 @@ def send_bill_information(cust_id,**kwargs):
         reply(data)
     else:
         # Todo:send mail to this new user
-        print("recipient id is none")
+        #print("recipient id is none")
         gmail_user = 'medbotizdr@gmail.com'
         gmail_password = 'vvvvrvvvvr'
         #TODO: how to get email of this customer
