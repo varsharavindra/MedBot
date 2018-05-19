@@ -108,7 +108,7 @@ def query_medicine_response_builder(fb_id, brand, quantity):
         elements_pharma = []
         logger.info("Sorry nobody has medicine")
         # TODO : HANDLE CASE WHEN NOBODY HAS REQUIRED AMOUNT OF MEDICINE
-        request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=500&key="+google_places_api_key)
+        request_pharmacy=requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latitude+","+longitude+"&type=pharmacy&radius=1000&key="+google_places_api_key)
         #print(request_pharmacy.content)
         pharmacy_data = request_pharmacy.json()
         #print(pharmacy_data['results'][0]['geometry']['location']['lat'])
@@ -276,11 +276,7 @@ def reply_for_query(fb_id, fb_text):
                 create_context(fb_id,"None", None)
             #Todo : see if this person has this message assuming he gives tradename
             #Todo : what if he gives drug name?
-
-
             #Todo: Mention previous quantity
-
-
 
 
     elif context == "MISSING_QTY":

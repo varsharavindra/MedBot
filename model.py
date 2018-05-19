@@ -305,7 +305,7 @@ def check_drug(trade_name):
     db = mysql.connect()
     cursor = db.cursor()
     cursor.execute(
-        """select * from drug where trade_name='%s'"""%(trade_name))
+        """select * from drug where drug_name='%s'"""%(trade_name))
     data = cursor.fetchone()
     db.close()
     logger.info("This is an info log" + str(data))
