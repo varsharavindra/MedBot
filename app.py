@@ -31,9 +31,9 @@ logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:
 logger = logging.getLogger('stack')
 
 threshold = 0
-token = "EAACGHzJZBmDABAOlZAEPVM2ikVWHx8hlMzmTZCO6l3s3kWMjQo5oywc0H8NK3IfMehFoEIHRS4W0w6REcfKWzxy7P9qAayTZBeVVZCpcU7KdSbC4rhiZBYMMryYLZCf0QEmEJSBqNSEZBJy7fEQmT7MQdoWYqTLEZBJOxKgkrioYhqv1AYTORC8Uu"
-CLIENT_ACCESS_TOKEN = 'ab47593acb7f45c68ca4ffe296db1885'
-google_places_api_key="AIzaSyCfbetwFSxJnIGfVy1j5Abh4z0xcNPQwNQ"
+token = ""
+CLIENT_ACCESS_TOKEN = ''
+google_places_api_key=""
 session = dict()
 
 # base_url = "https://localhost:8000/"
@@ -44,7 +44,7 @@ user_url = static_url + "user.jpg"
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "abcdefghijn"
+app.config['SECRET_KEY'] = ""
 
 
 def get_location_url(lat, long):
